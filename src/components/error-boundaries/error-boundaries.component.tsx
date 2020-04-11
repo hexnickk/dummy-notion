@@ -1,15 +1,15 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 
 export default class ErrorBoundary extends React.Component {
-    state = {hasError: false};
+    state = { hasError: false };
 
     constructor(props) {
         super(props);
     }
 
     static getDerivedStateFromError(error) {
-        return {hasError: true};
+        return { hasError: true };
     }
 
     componentDidCatch(error, errorInfo) {
@@ -17,8 +17,10 @@ export default class ErrorBoundary extends React.Component {
     }
 
     render() {
-        return this.state.hasError ?
-            <Redirect to="/500"></Redirect> :
-            this.props.children;
+        return this.state.hasError ? (
+            <Redirect to="/500"></Redirect>
+        ) : (
+            this.props.children
+        );
     }
 }
