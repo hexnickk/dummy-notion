@@ -2,18 +2,18 @@ import React, {Suspense} from 'react';
 import {BrowserRouter, Switch, Route} from "react-router-dom";
 import ErrorBoundary from "./components/error-boundaries";
 
-const Hello = React.lazy(() => import('./components/hello'))
+const TodosPage = React.lazy(() => import('./components/todos-page'))
 const ErrorPage = React.lazy(() => import('./components/error-page'));
 const NotFoundPage = React.lazy(() => import('./components/not-found-page'));
 
-const Loading = (props) => <div>Loading...</div>
+const Loading = () => <div>Loading...</div>
 
-export default (props) => <BrowserRouter>
+export default () => <BrowserRouter>
     <Switch>
         <Route exact path="/">
             <ErrorBoundary>
                 <Suspense fallback={<Loading></Loading>}>
-                    <Hello></Hello>
+                    <TodosPage></TodosPage>
                 </Suspense>
             </ErrorBoundary>
         </Route>

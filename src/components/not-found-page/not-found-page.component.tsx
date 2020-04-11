@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default (props) => <div>
+export default () => <div>
     Page is not found ☹️
 </div>
