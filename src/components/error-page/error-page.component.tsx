@@ -1,3 +1,3 @@
 import React from 'react';
 
-export default (props) => <div>Some error occurred ☹️</div>;
+export default () => <div>Some error occurred ☹️</div>;

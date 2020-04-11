@@ -1,5 +1,5 @@
-import {todosDomain} from './todos.domain'
-import {Todo} from './todos.model';
+import { todosDomain } from './todos.domain';
+import { Todo } from './todos.model';
 
 export type AddTodoModel = Pick<Todo, 'title' | 'description'>;
 export const addTodo = todosDomain.createEvent<AddTodoModel>('Add todo');

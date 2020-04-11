@@ -8,11 +8,11 @@ export default class ErrorBoundary extends React.Component {
         super(props);
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError() {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch() {
         // You can also log the error to an error reporting service
     }
 
