@@ -1,5 +1,8 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Todo, TodoStates } from '~src/stores/todos';
+import { Checkbox} from "antd";
+import {CheckboxChangeEvent} from "antd/es/checkbox";
+import { CloseOutlined } from '@ant-design/icons'
 
 interface TodoComponentProps {
     todo: Todo;
@@ -11,7 +14,7 @@ export const TodoComponent = React.memo(
         const deleteHandler = () => {
             onDelete?.(todo);
         };
-        const checkHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const checkHandler = (e: CheckboxChangeEvent) => {
             onUpdate?.({
                 ...todo,
                 state: e.target.checked
@@ -22,15 +25,14 @@ export const TodoComponent = React.memo(
         const isChecked = todo.state === TodoStates.CHECKED;
         return (
             <div>
-                <input
-                    type="checkbox"
+                <Checkbox
                     checked={isChecked}
                     onChange={checkHandler}
-                ></input>
+                ></Checkbox>
                 &nbsp;
                 <span>{todo.title}</span>
                 &nbsp;
-                <button onClick={deleteHandler}>x</button>
+                <span onClick={deleteHandler}><CloseOutlined/></span>
                 <p>{todo.description}</p>
             </div>
         );

@@ -1,43 +1,48 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState } from 'react';
 import { useStore } from 'effector-react';
 import { addTodo, updateTodo, todosStore, deleteTodo } from '~src/stores/todos';
 import { TodosListComponent } from './todos-list.component';
+import { Form, Input, Button } from 'antd';
+import './todos-page.component.scss';
 
 const TodoForm = () => {
-    const [title, setTitle] = useState('');
+    const [form] = Form.useForm();
+    const [title] = useState('');
+    form.setFieldsValue({
+        title,
+    })
 
-    const submitHandler = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        addTodo({
-            title,
-        });
-        setTitle('');
+    const finishHandler = (form) => {
+        addTodo(form);
+        form.resetFields();
     };
 
     return (
-        <form onSubmit={submitHandler}>
-            <input
-                placeholder="What todo?"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            ></input>
-            <button type="submit">Add Todo!</button>
-        </form>
+        <Form form={form} onFinish={finishHandler}>
+            <Form.Item name="title" >
+                <Input/>
+            </Form.Item>
+
+            <Form.Item>
+                <Button htmlType="submit">Add Todo!</Button>
+            </Form.Item>
+        </Form>
     );
 };
 
-const TodosPage = () => {
+export default function TodosPage() {
     const todos = useStore(todosStore);
 
     return (
-        <div>
-            <TodoForm></TodoForm>
-            <TodosListComponent
-                todos={todos}
-                onUpdate={updateTodo}
-                onDelete={deleteTodo}
-            ></TodosListComponent>
+        <div className="todos-page-wrapper">
+            <div className="todos-page">
+                <TodoForm></TodoForm>
+                <TodosListComponent
+                    todos={todos}
+                    onUpdate={updateTodo}
+                    onDelete={deleteTodo}
+                ></TodosListComponent>
+            </div>
         </div>
     );
-};
-export default TodosPage;
+}
