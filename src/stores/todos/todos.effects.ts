@@ -7,7 +7,10 @@ const config = {
 
 export const fetchTodos = todosDomain.createEffect<void, TodosDTO>({
     name: 'fetchTodos',
-    handler: (_) => JSON.parse(localStorage.getItem(config.todosStorageKey)),
+    handler: (_) => {
+        const data = localStorage.getItem(config.todosStorageKey);
+        return data ? JSON.parse(data) : undefined;
+    },
 });
 
 export type SaveTodosModel = TodosDTO;

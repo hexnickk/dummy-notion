@@ -1,12 +1,11 @@
 import { Todos, TodoStates } from './todos.model';
-import { fetchTodos, saveTodos } from './todos.effects';
-import { mapTodos, mapTodosDTO } from './todos.utils';
-import { addTodo } from './todos.events';
+import { fetchTodos } from './todos.effects';
+import { mapTodosDTO } from './todos.utils';
+import { addTodo, deleteTodo, updateTodo } from './todos.events';
 import { nanoid } from 'nanoid';
 import { todosDomain } from '~src/stores/todos/todos.domain';
 
-type TodosState = Todos;
-export const todosStore = todosDomain.createStore<TodosState>([
+const initialState: Todos = [
     {
         id: nanoid(),
         state: TodoStates.CHECKED,
@@ -29,24 +28,29 @@ export const todosStore = todosDomain.createStore<TodosState>([
         createdAt: new Date(),
         updatedAt: new Date(),
     },
-]);
+];
 
-todosStore.on(fetchTodos.doneData, (state, payload) => ({
-    ...state,
-    ...mapTodosDTO(payload),
-}));
+type TodosState = Todos;
+export const todosStore = todosDomain.createStore<TodosState>([]);
 
-todosStore.on(addTodo, (state, payload) => {
-    const todo = {
-        id: nanoid(),
-        ...payload,
-        state: TodoStates.UNCHECKED,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    };
-    return [...state, todo];
-});
+todosStore.on(fetchTodos.doneData, (state, payload) =>
+    payload ? mapTodosDTO(payload) : initialState
+);
 
-todosStore.watch((state) => {
-    saveTodos(mapTodos(state));
-});
+todosStore
+    .on(addTodo, (state, payload) => {
+        const todo = {
+            id: nanoid(),
+            ...payload,
+            state: TodoStates.UNCHECKED,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+        return [...state, todo];
+    })
+    .on(updateTodo, (state, payload) => {
+        return state.map((todo) => (todo.id === payload.id ? payload : todo));
+    })
+    .on(deleteTodo, (state, payload) => {
+        return state.filter((todo) => todo.id !== payload.id);
+    });

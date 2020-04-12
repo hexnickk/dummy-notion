@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useStore } from 'effector-react';
-import { addTodo, todosStore } from '~src/stores/todos';
+import { addTodo, updateTodo, todosStore, deleteTodo } from '~src/stores/todos';
 import { TodosListComponent } from './todos-list.component';
 
 const TodoForm = () => {
     const [title, setTitle] = useState('');
-    const onSubmit = (event: Event) => {
+
+    const submitHandler = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         addTodo({
             title,
-        })
+        });
+        setTitle('');
     };
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={submitHandler}>
             <input
                 placeholder="What todo?"
                 value={title}
@@ -26,10 +28,15 @@ const TodoForm = () => {
 
 const TodosPage = () => {
     const todos = useStore(todosStore);
+
     return (
         <div>
             <TodoForm></TodoForm>
-            <TodosListComponent todos={todos}></TodosListComponent>
+            <TodosListComponent
+                todos={todos}
+                onUpdate={updateTodo}
+                onDelete={deleteTodo}
+            ></TodosListComponent>
         </div>
     );
 };
