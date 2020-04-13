@@ -34,15 +34,13 @@ export default function TodosPage() {
     const todos = useStore(todosStore);
 
     return (
-        <div className="todos-page-wrapper">
-            <div className="todos-page">
-                <TodoForm></TodoForm>
-                <TodosListComponent
-                    todos={todos}
-                    onUpdate={updateTodo}
-                    onDelete={deleteTodo}
-                ></TodosListComponent>
-            </div>
+        <div className="todos-page">
+            <TodoForm></TodoForm>
+            <TodosListComponent
+                todos={todos}
+                onUpdate={updateTodo}
+                onDelete={deleteTodo}
+            ></TodosListComponent>
         </div>
     );
 }
