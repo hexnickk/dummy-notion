@@ -10,7 +10,7 @@ const TodoForm = () => {
     const [title] = useState('');
     form.setFieldsValue({
         title,
-    })
+    });
 
     const finishHandler = (form) => {
         addTodo(form);
@@ -19,8 +19,8 @@ const TodoForm = () => {
 
     return (
         <Form form={form} onFinish={finishHandler}>
-            <Form.Item name="title" >
-                <Input/>
+            <Form.Item name="title">
+                <Input />
             </Form.Item>
 
             <Form.Item>

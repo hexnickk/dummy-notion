@@ -1,8 +1,8 @@
 import React from 'react';
 import { Todo, TodoStates } from '~src/stores/todos';
-import { Checkbox} from "antd";
-import {CheckboxChangeEvent} from "antd/es/checkbox";
-import { CloseOutlined } from '@ant-design/icons'
+import { Checkbox } from 'antd';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { CloseOutlined } from '@ant-design/icons';
 
 interface TodoComponentProps {
     todo: Todo;
@@ -32,7 +32,9 @@ export const TodoComponent = React.memo(
                 &nbsp;
                 <span>{todo.title}</span>
                 &nbsp;
-                <span onClick={deleteHandler}><CloseOutlined/></span>
+                <span onClick={deleteHandler}>
+                    <CloseOutlined />
+                </span>
                 <p>{todo.description}</p>
             </div>
         );

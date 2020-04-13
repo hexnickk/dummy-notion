@@ -1,21 +1,24 @@
 import { todosDomain } from './todos.domain';
-import { TodosDTO } from './todos.model';
+import { Todos } from './todos.model';
+import { mapTodos, mapTodosDTO } from '~src/stores/todos/todos.utils';
 
 const config = {
     todosStorageKey: 'todos',
 };
 
-export const fetchTodos = todosDomain.createEffect<void, TodosDTO>({
+export const fetchTodos = todosDomain.createEffect<void, Todos>({
     name: 'fetchTodos',
     handler: (_) => {
         const data = localStorage.getItem(config.todosStorageKey);
-        return data ? JSON.parse(data) : undefined;
+        return data ? mapTodosDTO(JSON.parse(data)) : undefined;
     },
 });
 
-export type SaveTodosModel = TodosDTO;
-export const saveTodos = todosDomain.createEffect<SaveTodosModel, void>({
+export const saveTodos = todosDomain.createEffect<Todos, void>({
     name: 'saveTodos',
     handler: (params) =>
-        localStorage.setItem(config.todosStorageKey, JSON.stringify(params)),
+        localStorage.setItem(
+            config.todosStorageKey,
+            JSON.stringify(mapTodos(params))
+        ),
 });
