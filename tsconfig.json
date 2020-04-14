@@ -1,10 +1,15 @@
 {
-  "compilerOptions": {
-    "jsx": "react",
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "~*": ["*"]
-    }
-  }
+    "compilerOptions": {
+        "lib":["es2015", "dom"],
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "~*": ["*"]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": ["node_modules"]
 }

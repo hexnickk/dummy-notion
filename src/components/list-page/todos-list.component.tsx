@@ -17,6 +17,6 @@ export const TodosListComponent = React.memo(
                 onDelete={onDelete}
             ></TodoComponent>
         ));
-        return <div>{todosComponents}</div>
+        return <div>{todosComponents}</div>;
     }
 );

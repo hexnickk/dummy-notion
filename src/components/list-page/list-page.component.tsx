@@ -3,7 +3,8 @@ import { useStore } from 'effector-react';
 import { addTodo, updateTodo, todosStore, deleteTodo } from '~src/stores/todos';
 import { TodosListComponent } from './todos-list.component';
 import { Form, Input, Button } from 'antd';
-import './todos-page.component.scss';
+import './list-page.component.scss';
+import { listsStore } from '~src/stores/lists/lists.store';
 
 const TodoForm = () => {
     const [form] = Form.useForm();
@@ -30,11 +31,13 @@ const TodoForm = () => {
     );
 };
 
-export default function TodosPage() {
+export default function ListPage() {
+    const lists = useStore(listsStore);
     const todos = useStore(todosStore);
 
     return (
         <div className="todos-page">
+            <h1>{lists[0]?.title}</h1>
             <TodoForm></TodoForm>
             <TodosListComponent
                 todos={todos}

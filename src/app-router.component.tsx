@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import ErrorBoundary from './components/error-boundaries';
 
-const TodosPage = React.lazy(() => import('./components/todos-page'));
+const TodosPage = React.lazy(() => import('./components/list-page'));
 const ErrorPage = React.lazy(() => import('./components/error-page'));
 const NotFoundPage = React.lazy(() => import('./components/not-found-page'));
 

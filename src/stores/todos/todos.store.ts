@@ -1,6 +1,5 @@
 import { Todos, TodoStates } from './todos.model';
 import { fetchTodos } from './todos.effects';
-import { mapTodosDTO } from './todos.utils';
 import { addTodo, deleteTodo, updateTodo } from './todos.events';
 import { nanoid } from 'nanoid';
 import { todosDomain } from '~src/stores/todos/todos.domain';
@@ -33,9 +32,7 @@ const initialState: Todos = [
 type TodosState = Todos;
 export const todosStore = todosDomain.createStore<TodosState>([]);
 
-todosStore.on(fetchTodos.doneData, (state, payload) =>
-    payload ? mapTodosDTO(payload) : initialState
-);
+todosStore.on(fetchTodos.doneData, (state, payload) => payload ?? initialState);
 
 todosStore
     .on(addTodo, (state, payload) => {

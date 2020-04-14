@@ -1,23 +1,19 @@
 import React, { useEffect } from 'react';
 import AppRouter from './app-router.component';
-import { initTodos } from '~src/stores/todos/todos.init';
-import { Layout, Menu } from 'antd';
+import { initTodos } from '~src/stores/todos';
+import { initLists } from '~src/stores/lists';
+import { Layout } from 'antd';
 import './app.component.scss';
+import AppSider from '~src/components/sider';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 export function App() {
     useEffect(() => initTodos());
+    useEffect(() => initLists());
     return (
         <Layout className="app">
-            <Sider className="app__sider sider" width="20%">
-                <div className="sider__title">My lists</div>
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                    <Menu.Item key="1">
-                        <span>Default todo</span>
-                    </Menu.Item>
-                </Menu>
-            </Sider>
+            <AppSider className="app__sider"></AppSider>
             <Content className="app__content">
                 <AppRouter></AppRouter>
             </Content>

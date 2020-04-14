@@ -1,13 +1,7 @@
 @import 'antd/dist/antd.css';
 
 .app {
-  &__content {
-    min-height: 100vh;
-  }
-}
-
-.sider {
-  &__title {
-    color: white;
-  }
+    &__content {
+        min-height: 100vh;
+    }
 }
