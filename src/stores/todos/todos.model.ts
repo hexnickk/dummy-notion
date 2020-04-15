@@ -1,3 +1,5 @@
+import {List} from "~src/stores/lists/lists.model";
+
 export const enum TodoStates {
     UNCHECKED,
     CHECKED,
@@ -5,6 +7,7 @@ export const enum TodoStates {
 
 export interface TodoDTO {
     id: string;
+    listId: List['id'];
     title: string;
     state: TodoStates;
     description?: string;
@@ -16,6 +19,7 @@ export type TodosDTO = TodoDTO[];
 
 export interface Todo {
     id: string;
+    listId: List['id'];
     title: string;
     state: TodoStates;
     description?: string;

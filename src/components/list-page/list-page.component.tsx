@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from 'effector-react';
-import { addTodo, updateTodo, todosStore, deleteTodo } from '~src/stores/todos';
+import {
+    addTodo,
+    updateTodo,
+    deleteTodo,
+    todosByListIdStore,
+} from '~src/stores/todos';
 import { TodosListComponent } from './todos-list.component';
 import { Form, Input, Button } from 'antd';
 import './list-page.component.scss';
-import { listsStore } from '~src/stores/lists/lists.store';
+import { listByIdStore } from '~src/stores/lists/lists.store';
+import { useParams } from 'react-router-dom';
+import { List } from '~src/stores/lists/lists.model';
 
-const TodoForm = () => {
+interface TodoFormProps {
+    listId: List['id'];
+}
+const TodoForm = ({ listId }: TodoFormProps) => {
     const [form] = Form.useForm();
-    const [title] = useState('');
-    form.setFieldsValue({
-        title,
-    });
 
-    const finishHandler = (form) => {
-        addTodo(form);
+    const finishHandler = (values) => {
+        addTodo({
+            listId,
+            ...values,
+        });
         form.resetFields();
     };
 
@@ -32,13 +41,14 @@ const TodoForm = () => {
 };
 
 export default function ListPage() {
-    const lists = useStore(listsStore);
-    const todos = useStore(todosStore);
+    const { listId } = useParams();
+    const list = useStore(listByIdStore(listId));
+    const todos = useStore(todosByListIdStore(listId));
 
     return (
         <div className="todos-page">
-            <h1>{lists[0]?.title}</h1>
-            <TodoForm></TodoForm>
+            <h1>{list.title}</h1>
+            <TodoForm listId={listId}></TodoForm>
             <TodosListComponent
                 todos={todos}
                 onUpdate={updateTodo}
