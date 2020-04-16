@@ -1,4 +1,4 @@
-import { Todos, TodoStates } from './todos.model';
+import { Todos } from './todos.model';
 import { fetchTodos } from './todos.effects';
 import { addTodo, deleteTodo, updateTodo } from './todos.events';
 import { todosDomain } from './todos.domain';
@@ -9,7 +9,7 @@ const initialState: Todos = [
     {
         id: nanoid(),
         listId: 'default-todo',
-        state: TodoStates.CHECKED,
+        checked: true,
         title: 'Open this app!',
         description: 'You are awesome!',
         createdAt: new Date(),
@@ -18,7 +18,7 @@ const initialState: Todos = [
     {
         id: nanoid(),
         listId: 'default-todo',
-        state: TodoStates.UNCHECKED,
+        checked: false,
         title: 'Create a new TODO!',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -26,7 +26,7 @@ const initialState: Todos = [
     {
         id: nanoid(),
         listId: 'default-todo',
-        state: TodoStates.UNCHECKED,
+        checked: false,
         title: 'Share TODO with friends!',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -34,22 +34,29 @@ const initialState: Todos = [
 ];
 
 type TodosState = Todos;
-export const todosStore = todosDomain.createStore<TodosState>([]);
+export const $todosStore = todosDomain.createStore<TodosState>([], {
+    name: 'Todos store',
+});
 
 // Selectors
 export const todosByListIdStore = (listId: List['id']) =>
-    todosStore.map((state) => state.filter((todo) => todo.listId === listId));
+    $todosStore.map((state) => state.filter((todo) => todo.listId === listId));
+
+// TODO: add some logging
 
 // Effects
-todosStore.on(fetchTodos.doneData, (state, payload) => payload ?? initialState);
+$todosStore.on(
+    fetchTodos.doneData,
+    (state, payload) => payload ?? initialState
+);
 
 // Events
-todosStore
+$todosStore
     .on(addTodo, (state, payload) => {
         const todo = {
             id: nanoid(),
             ...payload,
-            state: TodoStates.UNCHECKED,
+            checked: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         };

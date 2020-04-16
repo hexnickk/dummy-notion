@@ -18,8 +18,12 @@ interface TodoFormProps {
 }
 const TodoForm = ({ listId }: TodoFormProps) => {
     const [form] = Form.useForm();
+    const initialValues = {
+        title: '',
+    };
 
     const finishHandler = (values) => {
+        console.log(values);
         addTodo({
             listId,
             ...values,
@@ -28,7 +32,11 @@ const TodoForm = ({ listId }: TodoFormProps) => {
     };
 
     return (
-        <Form form={form} onFinish={finishHandler}>
+        <Form
+            form={form}
+            onFinish={finishHandler}
+            initialValues={initialValues}
+        >
             <Form.Item name="title">
                 <Input />
             </Form.Item>

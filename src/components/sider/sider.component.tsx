@@ -3,7 +3,7 @@ import { Button, Input, Layout, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons/lib';
 import { useStore } from 'effector-react';
 import { Link } from 'react-router-dom';
-import { addList, listsStore$ } from '~src/stores/lists';
+import { addList, $listsStore } from '~src/stores/lists';
 import './sider.component.scss';
 
 const { Search } = Input;
@@ -14,7 +14,7 @@ interface AppSiderProps {
 }
 
 export default function AppSider({ className }: AppSiderProps) {
-    const lists = useStore(listsStore$);
+    const lists = useStore($listsStore);
     const menuItems = lists.map((list) => (
         <Menu.Item key={list.id}>
             <Link to={`/${list.id}`}>

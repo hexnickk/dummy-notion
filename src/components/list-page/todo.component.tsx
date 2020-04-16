@@ -1,41 +1,119 @@
-import React from 'react';
-import { Todo, TodoStates } from '~src/stores/todos';
-import { Checkbox } from 'antd';
+import React, {
+    ChangeEvent,
+    useEffect,
+    useRef,
+    useState,
+    KeyboardEvent,
+} from 'react';
+import { Todo } from '~src/stores/todos';
+import { Checkbox, Input } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { CloseOutlined } from '@ant-design/icons';
+import './todo.component.scss';
+
+const enum ComponentStates {
+    VIEW,
+    EDIT,
+}
 
 interface TodoComponentProps {
     todo: Todo;
     onUpdate?: (todo: Todo) => void;
     onDelete?: (todo: Todo) => void;
 }
+
 export const TodoComponent = React.memo(
     ({ todo, onUpdate, onDelete }: TodoComponentProps) => {
-        const deleteHandler = () => {
-            onDelete?.(todo);
+        const node = useRef<HTMLDivElement>();
+        const [componentState, setComponentState] = useState<ComponentStates>(
+            ComponentStates.VIEW
+        );
+        const [title, setTitle] = useState<string>(todo.title);
+
+        const saveAndCloseInput = () => {
+            // TODO: refactor onDelete and onUpdate checks
+            if (componentState === ComponentStates.EDIT) {
+                if (title === '') {
+                    onDelete?.(todo);
+                    return;
+                }
+                onUpdate?.({
+                    ...todo,
+                    title,
+                });
+                setComponentState(ComponentStates.VIEW);
+            }
         };
+        const handleDocumentClick = (e: MouseEvent) => {
+            if (
+                e.target instanceof HTMLElement &&
+                node.current.contains(e.target)
+            ) {
+                // inside click
+                return;
+            } // outside click
+            saveAndCloseInput();
+        };
+        useEffect(() => {
+            document.addEventListener('mousedown', handleDocumentClick);
+            return () => {
+                document.removeEventListener('mousedown', handleDocumentClick);
+            };
+        });
+
         const checkHandler = (e: CheckboxChangeEvent) => {
             onUpdate?.({
                 ...todo,
-                state: e.target.checked
-                    ? TodoStates.CHECKED
-                    : TodoStates.UNCHECKED,
+                checked: e.target.checked,
             });
         };
-        const isChecked = todo.state === TodoStates.CHECKED;
+        const titleClickHandler = () => {
+            setComponentState(ComponentStates.EDIT);
+        };
+        const titleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            setTitle(e.target.value);
+        };
+        const titleKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+            const isDeleteKey = e.key === 'Backspace' || e.key === 'Delete';
+            const isSubmitKey = e.key === 'Enter' || e.key === 'Escape';
+            const isEmptyTitle = title === '';
+            if (isDeleteKey && isEmptyTitle) {
+                onDelete?.(todo);
+                return;
+            }
+            if (isSubmitKey && isEmptyTitle) {
+                onDelete?.(todo);
+                return;
+            }
+            if (isSubmitKey) {
+                saveAndCloseInput();
+                return;
+            }
+        };
+
+        const viewComponent = (
+            <div className="todo__title" onClick={titleClickHandler}>
+                {todo.title}
+            </div>
+        );
+        const editComponent = (
+            <Input
+                className="todo__title todo__title_input"
+                value={title}
+                onChange={titleChangeHandler}
+                onKeyDown={titleKeyPressHandler}
+            ></Input>
+        );
         return (
-            <div>
+            <div className="todo" ref={node}>
                 <Checkbox
-                    checked={isChecked}
+                    className="todo__checkbox"
+                    checked={todo.checked}
                     onChange={checkHandler}
                 ></Checkbox>
                 &nbsp;
-                <span>{todo.title}</span>
-                &nbsp;
-                <span onClick={deleteHandler}>
-                    <CloseOutlined />
-                </span>
-                <p>{todo.description}</p>
+                {componentState === ComponentStates.VIEW
+                    ? viewComponent
+                    : editComponent}
             </div>
         );
     }

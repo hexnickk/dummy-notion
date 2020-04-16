@@ -3,9 +3,9 @@ import AppRouter from './app-router.component';
 import { initTodos } from '~src/stores/todos';
 import { initLists } from '~src/stores/lists';
 import { Layout } from 'antd';
-import './app.component.scss';
 import AppSider from '~src/components/sider';
 import { BrowserRouter } from 'react-router-dom';
+import './app.component.scss';
 
 const { Content } = Layout;
 

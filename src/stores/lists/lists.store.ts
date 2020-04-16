@@ -10,15 +10,19 @@ const initialState: Lists = [
         title: 'Todos',
     },
 ];
-export const listsStore$ = listsDomain.createStore<Lists>(initialState);
+export const $listsStore = listsDomain.createStore<Lists>(initialState, {
+    name: 'Lists store',
+});
 export const listByIdStore = (id: List['id']) =>
-    listsStore$.map((state) => state.find((list) => list.id === id));
+    $listsStore.map((state) => state.find((list) => list.id === id));
+
+// TODO: add some logging
 
 // effects
-listsStore$.on(fetchListsfx.doneData, (state, payload) => payload ?? state);
+$listsStore.on(fetchListsfx.doneData, (state, payload) => payload ?? state);
 
 // events
-listsStore$.on(addList, (state, _payload) => [
+$listsStore.on(addList, (state, _payload) => [
     ...state,
     {
         id: nanoid(),

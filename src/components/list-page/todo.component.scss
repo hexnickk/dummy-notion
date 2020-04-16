@@ -1,0 +1,21 @@
+.todo {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+
+    &__title {
+        min-height: 1em;
+        min-width: 64px;
+
+        &_input {
+            padding: 0;
+            background-color: initial;
+            border: 0;
+            border-bottom: 1px solid black;
+
+            &:focus {
+                box-shadow: unset;
+            }
+        }
+    }
+}
