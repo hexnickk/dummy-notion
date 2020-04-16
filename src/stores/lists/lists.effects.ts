@@ -6,7 +6,7 @@ const config = {
     listsStorageKey: 'lists',
 };
 
-export const fetchLists = listsDomain.createEffect<void, Lists>({
+export const fetchListsfx = listsDomain.createEffect<void, Lists>({
     name: 'fetchLists',
     handler: () => {
         const data = localStorage.getItem(config.listsStorageKey);
@@ -14,7 +14,7 @@ export const fetchLists = listsDomain.createEffect<void, Lists>({
     },
 });
 
-export const saveLists = listsDomain.createEffect<Lists, void>({
+export const saveListsfx = listsDomain.createEffect<Lists, void>({
     name: 'saveLists',
     handler: (params) =>
         localStorage.setItem(

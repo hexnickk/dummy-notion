@@ -1,8 +1,8 @@
-import { fetchLists, saveLists } from './lists.effects';
-import { listsStore } from './lists.store';
+import { fetchListsfx, saveListsfx } from './lists.effects';
+import { listsStore$ } from './lists.store';
 
 export const initLists = () => {
-    fetchLists().then(() => {
-        listsStore.watch(saveLists);
+    fetchListsfx().then(() => {
+        listsStore$.watch(saveListsfx);
     });
 };

@@ -1,4 +1,4 @@
-import {List} from "~src/stores/lists/lists.model";
+import { List } from '~src/stores/lists/lists.model';
 
 export const enum TodoStates {
     UNCHECKED,

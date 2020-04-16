@@ -1,9 +1,9 @@
-import {Todos, TodoStates} from './todos.model';
-import {fetchTodos} from './todos.effects';
-import {addTodo, deleteTodo, updateTodo} from './todos.events';
-import {todosDomain} from './todos.domain';
-import {nanoid} from 'nanoid';
-import {List} from '~src/stores/lists/lists.model';
+import { Todos, TodoStates } from './todos.model';
+import { fetchTodos } from './todos.effects';
+import { addTodo, deleteTodo, updateTodo } from './todos.events';
+import { todosDomain } from './todos.domain';
+import { nanoid } from 'nanoid';
+import { List } from '~src/stores/lists/lists.model';
 
 const initialState: Todos = [
     {

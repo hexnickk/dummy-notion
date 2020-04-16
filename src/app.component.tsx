@@ -5,6 +5,7 @@ import { initLists } from '~src/stores/lists';
 import { Layout } from 'antd';
 import './app.component.scss';
 import AppSider from '~src/components/sider';
+import { BrowserRouter } from 'react-router-dom';
 
 const { Content } = Layout;
 
@@ -12,11 +13,13 @@ export function App() {
     useEffect(() => initTodos());
     useEffect(() => initLists());
     return (
-        <Layout className="app">
-            <AppSider className="app__sider"></AppSider>
-            <Content className="app__content">
-                <AppRouter></AppRouter>
-            </Content>
-        </Layout>
+        <BrowserRouter>
+            <Layout className="app">
+                <AppSider className="app__sider"></AppSider>
+                <Content className="app__content">
+                    <AppRouter></AppRouter>
+                </Content>
+            </Layout>
+        </BrowserRouter>
     );
 }

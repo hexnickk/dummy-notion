@@ -1,5 +1,22 @@
 .sider {
+    height: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+
+    &__search {
+        margin-bottom: 8px;
+    }
+
     &__title {
         color: white;
+        margin-bottom: 8px;
+    }
+
+    &__menu {
+        flex: 1;
+    }
+
+    &__add-button {
     }
 }
