@@ -98,6 +98,7 @@ export const CheckboxBlockComponent = React.memo(
         const editComponent = (
             <Input
                 className="todo__title todo__title_input"
+                autoFocus
                 value={title}
                 onChange={titleChangeHandler}
                 onKeyDown={titleKeyPressHandler}
