@@ -3,7 +3,7 @@ import { Button, Input, Layout, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons/lib';
 import { useStore } from 'effector-react';
 import { Link } from 'react-router-dom';
-import { addList, $listsStore } from '~src/stores/lists';
+import { addPage, $pageStore } from '~src/stores/pages';
 import './sider.component.scss';
 
 const { Search } = Input;
@@ -14,25 +14,25 @@ interface AppSiderProps {
 }
 
 export default function AppSider({ className }: AppSiderProps) {
-    const lists = useStore($listsStore);
-    const menuItems = lists.map((list) => (
+    const pages = useStore($pageStore);
+    const menuItems = pages.map((list) => (
         <Menu.Item key={list.id}>
             <Link to={`/${list.id}`}>
                 <span>{list.title}</span>
             </Link>
         </Menu.Item>
     ));
-    const addListHandler = () => addList();
+    const addListHandler = () => addPage();
     return (
         <Sider className={`${className}`} width="20%">
             <div className="sider">
                 <Search className="sider__search" placeholder="input search" />
-                <div className="sider__title">My Lists</div>
+                <div className="sider__title">Private</div>
                 <Menu
                     className="sider__menu"
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={[lists[0].id]}
+                    defaultSelectedKeys={[pages[0].id]}
                 >
                     {menuItems}
                 </Menu>
@@ -41,7 +41,7 @@ export default function AppSider({ className }: AppSiderProps) {
                     block
                     onClick={addListHandler}
                 >
-                    <PlusOutlined></PlusOutlined>&nbsp;Add list
+                    <PlusOutlined></PlusOutlined>&nbsp;Add page
                 </Button>
             </div>
         </Sider>

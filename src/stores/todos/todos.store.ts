@@ -3,7 +3,7 @@ import { fetchTodos } from './todos.effects';
 import { addTodo, deleteTodo, updateTodo } from './todos.events';
 import { todosDomain } from './todos.domain';
 import { nanoid } from 'nanoid';
-import { List } from '~src/stores/lists/lists.model';
+import { Page } from '~src/stores/pages';
 
 const initialState: Todos = [
     {
@@ -39,7 +39,7 @@ export const $todosStore = todosDomain.createStore<TodosState>([], {
 });
 
 // Selectors
-export const todosByListIdStore = (listId: List['id']) =>
+export const todosByListIdStore = (listId: Page['id']) =>
     $todosStore.map((state) => state.filter((todo) => todo.listId === listId));
 
 // TODO: add some logging

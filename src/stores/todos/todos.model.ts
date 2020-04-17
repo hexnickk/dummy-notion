@@ -1,8 +1,8 @@
-import { List } from '~src/stores/lists/lists.model';
+import { Page } from '~src/stores/pages';
 
 export interface TodoDTO {
     id: string;
-    listId: List['id'];
+    listId: Page['id'];
     title: string;
     checked: boolean;
     description?: string;
@@ -14,7 +14,7 @@ export type TodosDTO = TodoDTO[];
 
 export interface Todo {
     id: string;
-    listId: List['id'];
+    listId: Page['id'];
     title: string;
     checked: boolean;
     description?: string;
