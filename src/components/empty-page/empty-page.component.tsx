@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from 'react';
 import './empty-page.component.scss';
 
 interface EmptyPageComponentProps {
-    onClick: MouseEventHandler<HTMLDivElement>;
+    onClick?: MouseEventHandler<HTMLDivElement>;
 }
 export function EmptyPageComponent({
     onClick,

@@ -1,2 +1,1 @@
-import AppSider from './sider.component';
-export default AppSider;
+export * from './sider.component';

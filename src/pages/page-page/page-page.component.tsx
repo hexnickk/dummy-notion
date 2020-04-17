@@ -1,47 +1,62 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 import {
-    addBlock,
     deleteBlock,
-    Block,
-    blockByListIdStore,
     updateBlock,
+    findBlockStore,
+    PageBlock,
+    childrenBlocksStore,
+    Block,
+    addChildToEnd,
+    checkboxFactory,
+    addChildNextTo,
 } from '~src/stores/blocks';
 import './page-page.component.scss';
-import { $pageByIdStore } from '~src/stores/pages';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
 
 export default function PagePage() {
-    const { listId } = useParams();
-    const list = useStore($pageByIdStore(listId));
-    const todos = useStore(blockByListIdStore(listId));
-    const isEmpty = todos.length === 0;
+    const { blockPageId } = useParams();
+    const page = useStore(
+        findBlockStore<PageBlock>((block) => block.id === blockPageId)
+    );
+    const children = useStore(childrenBlocksStore(page));
+    const isEmpty = !children || children.length === 0;
 
-    const blockOnSubmitHandler = (todo: Block) => {
-        addBlock({
-            pageId: listId,
-            position: 'next',
-            relativeBlock: todo,
+    const blockOnSubmitHandler = (block: Block) => {
+        addChildNextTo({
+            parent: page,
+            child: checkboxFactory(),
+            neighbour: block,
         });
     };
+
+    const blockFactory = (block: Block) => {
+        switch (block.type) {
+            case 'checkbox':
+                return (
+                    <CheckboxBlockComponent
+                        key={block.id}
+                        block={block}
+                        onUpdate={updateBlock}
+                        onDelete={deleteBlock}
+                        onSubmit={blockOnSubmitHandler}
+                    ></CheckboxBlockComponent>
+                );
+            default:
+                return <div>Unsupported block ☹️</div>;
+        }
+    };
+
     const emptyPageClickHandler = () => {
-        addBlock({
-            pageId: listId,
-            position: 'end',
+        addChildToEnd({
+            parent: page,
+            child: checkboxFactory(),
         });
     };
 
-    const todosComponents = todos.map((todo) => (
-        <CheckboxBlockComponent
-            key={todo.id}
-            todo={todo}
-            onUpdate={updateBlock}
-            onDelete={deleteBlock}
-            onSubmit={blockOnSubmitHandler}
-        ></CheckboxBlockComponent>
-    ));
+    const todosComponents = children.map(blockFactory);
     const emptyPageComponent = (
         <EmptyPageComponent
             onClick={emptyPageClickHandler}
@@ -49,7 +64,7 @@ export default function PagePage() {
     );
     return (
         <div className="page-page">
-            <h1>{list.title}</h1>
+            <h1>{page.title}</h1>
             {isEmpty ? emptyPageComponent : todosComponents}
         </div>
     );

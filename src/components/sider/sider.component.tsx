@@ -1,28 +1,32 @@
 import React from 'react';
 import { Button, Input, Layout, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons/lib';
-import { useStore } from 'effector-react';
-import { Link } from 'react-router-dom';
-import { addPage, $pageStore } from '~src/stores/pages';
+import { Link, useLocation } from 'react-router-dom';
 import './sider.component.scss';
+import { PageBlock } from '~src/stores/blocks';
 
 const { Search } = Input;
 const { Sider } = Layout;
 
 interface AppSiderProps {
     className?: string;
+    pages?: PageBlock[];
 }
 
-export default function AppSider({ className }: AppSiderProps) {
-    const pages = useStore($pageStore);
-    const menuItems = pages.map((list) => (
-        <Menu.Item key={list.id}>
-            <Link to={`/${list.id}`}>
-                <span>{list.title}</span>
-            </Link>
-        </Menu.Item>
-    ));
-    const addListHandler = () => addPage();
+export function AppSider({ className, pages }: AppSiderProps) {
+    const location = useLocation();
+
+    const menuItems = pages?.map((page) => {
+        const route = `/${page.id}`;
+        return (
+            <Menu.Item key={route}>
+                <Link to={route}>
+                    <span>{page.title}</span>
+                </Link>
+            </Menu.Item>
+        );
+    });
+    // const addListHandler = () => addPage();
     return (
         <Sider className={`${className}`} width="20%">
             <div className="sider">
@@ -32,14 +36,14 @@ export default function AppSider({ className }: AppSiderProps) {
                     className="sider__menu"
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={[pages[0].id]}
+                    selectedKeys={[location.pathname]}
                 >
                     {menuItems}
                 </Menu>
                 <Button
                     className="sider__add-button"
                     block
-                    onClick={addListHandler}
+                    // onClick={addListHandler}
                 >
                     <PlusOutlined></PlusOutlined>&nbsp;Add page
                 </Button>

@@ -1,25 +1,16 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import AppRouter from './app-router.component';
-import { initBlocks } from '~src/stores/blocks';
-import { initPages } from '~src/stores/pages';
+import {$rootBlockStore, childrenBlocksStore, PageBlock} from '~src/stores/blocks';
 import { Layout } from 'antd';
-import AppSider from '~src/components/sider';
 import { BrowserRouter } from 'react-router-dom';
 import './app.component.scss';
+import { useStore } from 'effector-react';
 
-const { Content } = Layout;
 
 export function App() {
-    useEffect(() => initBlocks());
-    useEffect(() => initPages());
     return (
         <BrowserRouter>
-            <Layout className="app">
-                <AppSider className="app__sider"></AppSider>
-                <Content className="app__content">
-                    <AppRouter></AppRouter>
-                </Content>
-            </Layout>
+            <AppRouter></AppRouter>
         </BrowserRouter>
     );
 }

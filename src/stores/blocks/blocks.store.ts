@@ -1,48 +1,60 @@
-import { Blocks } from './blocks.model';
+import {
+    Block,
+    Blocks,
+    CheckboxBlock,
+    PageBlock,
+    RootBlock,
+} from './blocks.model';
 import { fetchBlocksFx } from './blocks.effects';
-import { addBlock, deleteBlock, updateBlock } from './blocks.events';
+import {
+    addChildNextTo,
+    addChildToEnd,
+    deleteBlock,
+    updateBlock,
+} from './blocks.events';
 import { blocksDomain } from './blocks.domain';
 import { nanoid } from 'nanoid';
-import { Page } from '~src/stores/pages';
 
-const initialState: Blocks = [
-    {
-        id: nanoid(),
-        pageId: 'default-page',
-        checked: true,
-        title: 'Open this app!',
-        description: 'You are awesome!',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-    {
-        id: nanoid(),
-        pageId: 'default-page',
-        checked: false,
-        title: 'Note something!',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-    {
-        id: nanoid(),
-        pageId: 'default-page',
-        checked: false,
-        title: 'Share it with friends!',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-];
+const firstPage: PageBlock = {
+    id: nanoid(),
+    type: 'page',
+    title: 'First page!',
+    children: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+};
+
+const rootBlock: RootBlock = {
+    id: nanoid(),
+    type: 'root',
+    children: [firstPage.id],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+};
 
 type BlocksState = Blocks;
+
+const initialState: BlocksState = [rootBlock, firstPage];
+
 export const $blocksStore = blocksDomain.createStore<BlocksState>([], {
     name: 'Blocks store',
 });
 
 // Selectors
-export const blockByListIdStore = (listId: Page['id']) =>
-    $blocksStore.map((state) =>
-        state.filter((block) => block.pageId === listId)
-    );
+export const $rootBlockStore = $blocksStore.map((state) =>
+    state.find((block) => block.type === 'root')
+);
+
+export const childrenBlocksStore = <T extends Block = Block>(
+    parent: Block,
+) =>
+    $blocksStore.map((state) => {
+        return parent.children.map(child => state.find(block => block.id === child) as T)
+    });
+
+export const findBlockStore = <T extends Block = Block>(
+    predicate: (block: Block) => boolean
+) => $blocksStore.map<T>((state) => state.find(predicate) as T);
 
 // TODO: add some logging
 
@@ -54,16 +66,31 @@ $blocksStore.on(
 
 // Events
 $blocksStore
-    .on(addBlock, (state, payload) => {
-        const block = {
-            id: nanoid(),
-            title: 'New item',
-            pageId: payload.pageId,
-            checked: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
-        return [...state, block];
+    .on(addChildToEnd, (state, { parent, child }) => {
+        return [...state, child].map((block) =>
+            block.id === parent.id
+                ? {
+                      ...parent,
+                      children: [...parent.children, child.id],
+                  }
+                : block
+        );
+    })
+    .on(addChildNextTo, (state, { parent, child, neighbour }) => {
+        return [...state, child].map((block) =>
+            block.id === parent.id
+                ? {
+                      ...parent,
+                      children: parent.children.reduce(
+                          (acc, cur) =>
+                              cur === neighbour.id
+                                  ? [...acc, cur, child.id]
+                                  : [...acc, cur],
+                          []
+                      ),
+                  }
+                : block
+        );
     })
     .on(updateBlock, (state, payload) => {
         return state.map((item) => (item.id === payload.id ? payload : item));

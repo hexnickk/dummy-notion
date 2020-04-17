@@ -1,6 +1,6 @@
 import { blocksDomain } from './blocks.domain';
 import { Blocks } from './blocks.model';
-import { mapBlocks, mapBlocksDTO } from './blocks.utils.js';
+import { mapBlocks, mapBlocksDTO } from './blocks.utils';
 
 const config = {
     blocksStorageKey: 'blocks',

@@ -1,19 +1,19 @@
 import React, { ChangeEvent, useRef, KeyboardEvent } from 'react';
-import { Block } from '~src/stores/blocks';
+import { CheckboxBlock } from '~src/stores/blocks';
 import './checkbox-block.component.scss';
 
 interface CheckboxBlockComponentProps {
-    todo: Block;
-    onUpdate?: (todo: Block) => void;
-    onDelete?: (todo: Block) => void;
+    block: CheckboxBlock;
+    onUpdate?: (todo: CheckboxBlock) => void;
+    onDelete?: (todo: CheckboxBlock) => void;
     onPrevious?: () => void;
     onNext?: () => void;
-    onSubmit?: (todo: Block) => void;
+    onSubmit?: (todo: CheckboxBlock) => void;
 }
 
 export const CheckboxBlockComponent = React.memo(
     ({
-        todo,
+        block,
         onUpdate,
         onDelete,
         onSubmit,
@@ -24,23 +24,23 @@ export const CheckboxBlockComponent = React.memo(
 
         const checkHandler = (e: ChangeEvent<HTMLInputElement>) => {
             onUpdate?.({
-                ...todo,
+                ...block,
                 checked: e.target.checked,
             });
         };
         const titleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            onUpdate?.({ ...todo, title: e.target.value });
+            onUpdate?.({ ...block, title: e.target.value });
         };
         const titleKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
             switch (e.key) {
                 case 'Backspace':
                 case 'Delete':
-                    if (todo.title === '') {
-                        onDelete?.(todo);
+                    if (block.title === '') {
+                        onDelete?.(block);
                     }
                     break;
                 case 'Enter':
-                    onSubmit?.(todo);
+                    onSubmit?.(block);
                     break;
                 case 'ArrowUp':
                     onPrevious?.();
@@ -56,13 +56,13 @@ export const CheckboxBlockComponent = React.memo(
                 <input
                     type="checkbox"
                     className="checkbox-block__checkbox"
-                    checked={todo.checked}
+                    checked={block.checked}
                     onChange={checkHandler}
                 ></input>
                 &nbsp;
                 <input
                     className="checkbox-block__title"
-                    value={todo.title}
+                    value={block.title}
                     onChange={titleChangeHandler}
                     onKeyDown={titleKeyPressHandler}
                 ></input>
