@@ -55,7 +55,8 @@ $todosStore
     .on(addTodo, (state, payload) => {
         const todo = {
             id: nanoid(),
-            ...payload,
+            title: 'New item',
+            listId: payload.listId,
             checked: false,
             createdAt: new Date(),
             updatedAt: new Date(),

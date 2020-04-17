@@ -6,50 +6,23 @@ import {
     deleteTodo,
     todosByListIdStore,
 } from '~src/stores/todos';
-import { Form, Input, Button } from 'antd';
 import './page-page.component.scss';
-import { $pageByIdStore, Page } from '~src/stores/pages';
+import { $pageByIdStore } from '~src/stores/pages';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
-
-interface TodoFormProps {
-    listId: Page['id'];
-}
-const TodoForm = ({ listId }: TodoFormProps) => {
-    const [form] = Form.useForm();
-    const initialValues = {
-        title: '',
-    };
-
-    const finishHandler = (values) => {
-        addTodo({
-            listId,
-            ...values,
-        });
-        form.resetFields();
-    };
-
-    return (
-        <Form
-            form={form}
-            onFinish={finishHandler}
-            initialValues={initialValues}
-        >
-            <Form.Item name="title">
-                <Input />
-            </Form.Item>
-
-            <Form.Item>
-                <Button htmlType="submit">Add Todo!</Button>
-            </Form.Item>
-        </Form>
-    );
-};
+import EmptySpaceComponent from '~src/components/empty-page/empty-page.component';
 
 export default function PagePage() {
     const { listId } = useParams();
     const list = useStore($pageByIdStore(listId));
     const todos = useStore(todosByListIdStore(listId));
+    const isEmpty = todos.length === 0;
+
+    const handleEmptyPageClick = () => {
+        addTodo({
+            listId,
+        });
+    }
 
     const todosComponents = todos.map((todo) => (
         <CheckboxBlockComponent
@@ -59,11 +32,11 @@ export default function PagePage() {
             onDelete={deleteTodo}
         ></CheckboxBlockComponent>
     ));
+    const emptyPageComponent = <EmptySpaceComponent onClick={handleEmptyPageClick}></EmptySpaceComponent>;
     return (
-        <div className="todos-page">
+        <div className="page-page">
             <h1>{list.title}</h1>
-            <TodoForm listId={listId}></TodoForm>
-            {todosComponents}
+            {isEmpty ? emptyPageComponent : todosComponents}
         </div>
     );
 }
