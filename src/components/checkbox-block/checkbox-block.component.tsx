@@ -8,7 +8,7 @@ import React, {
 import { Todo } from '~src/stores/todos';
 import { Checkbox, Input } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import './todo.component.scss';
+import './checkbox-block.component.scss';
 
 const enum ComponentStates {
     VIEW,
@@ -21,7 +21,7 @@ interface TodoComponentProps {
     onDelete?: (todo: Todo) => void;
 }
 
-export const TodoComponent = React.memo(
+export const CheckboxBlockComponent = React.memo(
     ({ todo, onUpdate, onDelete }: TodoComponentProps) => {
         const node = useRef<HTMLDivElement>();
         const [componentState, setComponentState] = useState<ComponentStates>(

@@ -10,7 +10,7 @@ import { Form, Input, Button } from 'antd';
 import './page-page.component.scss';
 import { $pageByIdStore, Page } from '~src/stores/pages';
 import { useParams } from 'react-router-dom';
-import { TodoComponent } from '~src/components/checkbox-block/todo.component';
+import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 
 interface TodoFormProps {
     listId: Page['id'];
@@ -52,12 +52,12 @@ export default function PagePage() {
     const todos = useStore(todosByListIdStore(listId));
 
     const todosComponents = todos.map((todo) => (
-        <TodoComponent
+        <CheckboxBlockComponent
             key={todo.id}
             todo={todo}
             onUpdate={updateTodo}
             onDelete={deleteTodo}
-        ></TodoComponent>
+        ></CheckboxBlockComponent>
     ));
     return (
         <div className="todos-page">
