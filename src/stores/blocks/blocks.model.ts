@@ -1,8 +1,8 @@
 import { Page } from '~src/stores/pages';
 
-export interface TodoDTO {
+export interface BlockDTO {
     id: string;
-    listId: Page['id'];
+    pageId: Page['id'];
     title: string;
     checked: boolean;
     description?: string;
@@ -10,11 +10,11 @@ export interface TodoDTO {
     updatedAt: number;
 }
 
-export type TodosDTO = TodoDTO[];
+export type BlocksDTO = BlockDTO[];
 
-export interface Todo {
+export interface Block {
     id: string;
-    listId: Page['id'];
+    pageId: Page['id'];
     title: string;
     checked: boolean;
     description?: string;
@@ -22,4 +22,4 @@ export interface Todo {
     updatedAt: Date;
 }
 
-export type Todos = Todo[];
+export type Blocks = Block[];

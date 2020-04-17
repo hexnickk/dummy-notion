@@ -6,8 +6,8 @@ import { nanoid } from 'nanoid';
 
 const initialState: Pages = [
     {
-        id: 'default-todo',
-        title: 'Todos',
+        id: 'default-page',
+        title: 'Page',
     },
 ];
 export const $pageStore = pagesDomain.createStore<Pages>(initialState, {

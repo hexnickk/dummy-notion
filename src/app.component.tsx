@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import AppRouter from './app-router.component';
-import { initTodos } from '~src/stores/todos';
+import { initBlocks } from '~src/stores/blocks';
 import { initPages } from '~src/stores/pages';
 import { Layout } from 'antd';
 import AppSider from '~src/components/sider';
@@ -10,7 +10,7 @@ import './app.component.scss';
 const { Content } = Layout;
 
 export function App() {
-    useEffect(() => initTodos());
+    useEffect(() => initBlocks());
     useEffect(() => initPages());
     return (
         <BrowserRouter>

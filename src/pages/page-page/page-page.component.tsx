@@ -1,38 +1,52 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 import {
-    addTodo,
-    updateTodo,
-    deleteTodo,
-    todosByListIdStore,
-} from '~src/stores/todos';
+    addBlock,
+    deleteBlock,
+    Block,
+    blockByListIdStore,
+    updateBlock,
+} from '~src/stores/blocks';
 import './page-page.component.scss';
 import { $pageByIdStore } from '~src/stores/pages';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
-import EmptySpaceComponent from '~src/components/empty-page/empty-page.component';
+import { EmptyPageComponent } from '~src/components/empty-page';
 
 export default function PagePage() {
     const { listId } = useParams();
     const list = useStore($pageByIdStore(listId));
-    const todos = useStore(todosByListIdStore(listId));
+    const todos = useStore(blockByListIdStore(listId));
     const isEmpty = todos.length === 0;
 
-    const handleEmptyPageClick = () => {
-        addTodo({
-            listId,
+    const blockOnSubmitHandler = (todo: Block) => {
+        addBlock({
+            pageId: listId,
+            position: 'next',
+            relativeBlock: todo,
         });
-    }
+    };
+    const emptyPageClickHandler = () => {
+        addBlock({
+            pageId: listId,
+            position: 'end',
+        });
+    };
 
     const todosComponents = todos.map((todo) => (
         <CheckboxBlockComponent
             key={todo.id}
             todo={todo}
-            onUpdate={updateTodo}
-            onDelete={deleteTodo}
+            onUpdate={updateBlock}
+            onDelete={deleteBlock}
+            onSubmit={blockOnSubmitHandler}
         ></CheckboxBlockComponent>
     ));
-    const emptyPageComponent = <EmptySpaceComponent onClick={handleEmptyPageClick}></EmptySpaceComponent>;
+    const emptyPageComponent = (
+        <EmptyPageComponent
+            onClick={emptyPageClickHandler}
+        ></EmptyPageComponent>
+    );
     return (
         <div className="page-page">
             <h1>{list.title}</h1>
