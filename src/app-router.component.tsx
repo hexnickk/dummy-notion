@@ -4,9 +4,9 @@ import ErrorBoundary from './components/error-boundaries';
 import { useStore } from 'effector-react';
 import { $pageStore } from '~src/stores/pages';
 
-const TodosPage = React.lazy(() => import('./components/list-page'));
-const ErrorPage = React.lazy(() => import('./components/error-page'));
-const NotFoundPage = React.lazy(() => import('./components/not-found-page'));
+const PagePage = React.lazy(() => import('./pages/page-page'));
+const ErrorPage = React.lazy(() => import('./pages/error-page'));
+const NotFoundPage = React.lazy(() => import('./pages/not-found-page'));
 
 const Loading = () => <div>Loading...</div>;
 
@@ -28,7 +28,7 @@ export default function AppRouter() {
             <Route exact path="/:listId">
                 <ErrorBoundary>
                     <Suspense fallback={<Loading></Loading>}>
-                        <TodosPage></TodosPage>
+                        <PagePage></PagePage>
                     </Suspense>
                 </ErrorBoundary>
             </Route>

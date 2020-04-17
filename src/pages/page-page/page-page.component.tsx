@@ -6,11 +6,11 @@ import {
     deleteTodo,
     todosByListIdStore,
 } from '~src/stores/todos';
-import { TodosListComponent } from './todos-list.component';
 import { Form, Input, Button } from 'antd';
-import './list-page.component.scss';
+import './page-page.component.scss';
 import { $pageByIdStore, Page } from '~src/stores/pages';
 import { useParams } from 'react-router-dom';
+import { TodoComponent } from '~src/components/checkbox-block/todo.component';
 
 interface TodoFormProps {
     listId: Page['id'];
@@ -22,7 +22,6 @@ const TodoForm = ({ listId }: TodoFormProps) => {
     };
 
     const finishHandler = (values) => {
-        console.log(values);
         addTodo({
             listId,
             ...values,
@@ -47,20 +46,24 @@ const TodoForm = ({ listId }: TodoFormProps) => {
     );
 };
 
-export default function ListPage() {
+export default function PagePage() {
     const { listId } = useParams();
     const list = useStore($pageByIdStore(listId));
     const todos = useStore(todosByListIdStore(listId));
 
+    const todosComponents = todos.map((todo) => (
+        <TodoComponent
+            key={todo.id}
+            todo={todo}
+            onUpdate={updateTodo}
+            onDelete={deleteTodo}
+        ></TodoComponent>
+    ));
     return (
         <div className="todos-page">
             <h1>{list.title}</h1>
             <TodoForm listId={listId}></TodoForm>
-            <TodosListComponent
-                todos={todos}
-                onUpdate={updateTodo}
-                onDelete={deleteTodo}
-            ></TodosListComponent>
+            {todosComponents}
         </div>
     );
 }
