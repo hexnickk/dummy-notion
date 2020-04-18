@@ -11,12 +11,12 @@ import {
     checkboxFactory,
     addChildNextTo,
 } from '~src/stores/blocks';
-import './page-page.component.scss';
+import './page-block.component.scss';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
 
-export default function PagePage() {
+export function PageBlockComponent() {
     const { blockPageId } = useParams();
     const page = useStore(
         findBlockStore<PageBlock>((block) => block.id === blockPageId)

@@ -4,11 +4,15 @@ import ErrorBoundary from './components/error-boundaries';
 import { AppSider } from '~src/components/sider';
 import { Layout } from 'antd';
 import { useStore } from 'effector-react';
-import { $rootBlockStore, childrenBlocksStore, PageBlock } from '~src/stores/blocks';
+import {
+    $rootBlockStore,
+    childrenBlocksStore,
+    PageBlock,
+} from '~src/stores/blocks';
+import { PageBlockComponent } from './components/page-block';
 
 const { Content } = Layout;
 
-const PagePage = React.lazy(() => import('./pages/page-page'));
 const ErrorPage = React.lazy(() => import('./pages/error-page'));
 const NotFoundPage = React.lazy(() => import('./pages/not-found-page'));
 
@@ -16,9 +20,7 @@ const Loading = () => <div>Loading...</div>;
 
 export default function AppRouter() {
     const root = useStore($rootBlockStore);
-    const rootPages = useStore(
-        childrenBlocksStore<PageBlock>(root)
-    );
+    const rootPages = useStore(childrenBlocksStore<PageBlock>(root));
 
     return (
         <Switch>
@@ -34,21 +36,20 @@ export default function AppRouter() {
             </Route>
             <Redirect from="/" exact={true} to={rootPages[0]?.id}></Redirect>
             <Route>
+                {/*TODO: move to lazy loaded Home component*/}
                 <Layout className="app">
                     <AppSider
                         className="app__sider"
                         pages={rootPages}
                     ></AppSider>
                     <Content className="app__content">
-                        <Switch>
-                            <Route exact path="/:blockPageId">
-                                <ErrorBoundary>
-                                    <Suspense fallback={<Loading></Loading>}>
-                                        <PagePage></PagePage>
-                                    </Suspense>
-                                </ErrorBoundary>
-                            </Route>
-                        </Switch>
+                        <ErrorBoundary>
+                            <Switch>
+                                <Route exact path="/:blockPageId">
+                                    <PageBlockComponent></PageBlockComponent>
+                                </Route>
+                            </Switch>
+                        </ErrorBoundary>
                     </Content>
                 </Layout>
             </Route>
