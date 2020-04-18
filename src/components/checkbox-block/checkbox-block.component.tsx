@@ -3,7 +3,6 @@ import {
     CheckboxBlock,
     InputBasedBlockComponentProps,
 } from '~src/stores/blocks';
-import './checkbox-block.component.scss';
 
 export const CheckboxBlockComponent = React.memo(
     ({

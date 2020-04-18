@@ -14,12 +14,13 @@ import {
     InputBasedBlock,
     textBlockFactory,
     convertBlock,
-    blockFactoryStrategy,
+    checkboxBlockFactory,
 } from '~src/stores/blocks';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
 import { TextBlockComponent } from '~src/components/text-block/text-block.components';
+import { HeaderBlockComponent } from '~src/components/header-block';
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
@@ -49,13 +50,14 @@ export function PageBlockComponent() {
         setFocused(index);
     };
 
-    const createChildBlockHandler = (initializer: Block) => {
-        const childFactory = blockFactoryStrategy(initializer.type);
-        const target = childFactory();
+    const createChildBlockHandler = (
+        initializer: Block,
+        target: Block = textBlockFactory()
+    ) => {
         const position = page.children.indexOf(initializer.id);
         insertBlock({
             parent: page,
-            target,
+            target: target,
             position,
         });
         forceFocusNextBlock();
@@ -75,10 +77,12 @@ export function PageBlockComponent() {
     ) => {
         const isEmptyTitle = block.title === '';
         const isTextBlock = block.type === 'text';
+        const isCheckBox = block.type === 'checkbox';
+        const isHeaderBlock = block.type === 'header';
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
-                if (isEmptyTitle && isTextBlock) {
+                if (isEmptyTitle && (isTextBlock || isHeaderBlock)) {
                     e.preventDefault();
                     deleteBlockHandler(block);
                     break;
@@ -101,9 +105,11 @@ export function PageBlockComponent() {
                         target: block,
                         type: 'text' as 'text',
                     });
-                    break;
+                } else if (isCheckBox) {
+                    createChildBlockHandler(block, checkboxBlockFactory());
+                } else {
+                    createChildBlockHandler(block);
                 }
-                createChildBlockHandler(block);
                 break;
             case 'ArrowUp':
                 e.preventDefault();
@@ -119,39 +125,33 @@ export function PageBlockComponent() {
                     convertBlock({
                         parent: page,
                         target: block,
-                        type: 'checkbox' as 'checkbox',
+                        type: 'checkbox',
                     });
                 }
                 break;
+            case ' ':
+            case 'Spacebar':
+                if (block.title === '#') {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'header',
+                    });
+                }
         }
     };
 
-    const blockFactory = (block: Block, index: number) => {
+    const blockComponentFactory = (block: Block) => {
         switch (block.type) {
             case 'text':
-                return (
-                    <TextBlockComponent
-                        key={block.id}
-                        block={block}
-                        focused={index === focused}
-                        onChange={updateBlock}
-                        onClick={focusSetBlock(index)}
-                        onKeyDown={blockKeyPressHandler}
-                    ></TextBlockComponent>
-                );
+                return TextBlockComponent;
             case 'checkbox':
-                return (
-                    <CheckboxBlockComponent
-                        key={block.id}
-                        block={block}
-                        focused={index === focused}
-                        onChange={updateBlock}
-                        onClick={focusSetBlock(index)}
-                        onKeyDown={blockKeyPressHandler}
-                    ></CheckboxBlockComponent>
-                );
+                return CheckboxBlockComponent;
+            case 'header':
+                return HeaderBlockComponent;
             default:
-                return <div>Unsupported block ☹️</div>;
+                return (_props: any) => <div>Unsupported block ☹️</div>;
         }
     };
 
@@ -162,7 +162,19 @@ export function PageBlockComponent() {
         });
     };
 
-    const todosComponents = children.map(blockFactory);
+    const blockComponents = children.map((block, index) => {
+        const BlockComponent = blockComponentFactory(block);
+        return (
+            <BlockComponent
+                key={block.id}
+                block={block}
+                focused={index === focused}
+                onChange={updateBlock}
+                onClick={focusSetBlock(index)}
+                onKeyDown={blockKeyPressHandler}
+            ></BlockComponent>
+        );
+    });
     const emptyPageComponent = (
         <EmptyPageComponent
             onClick={emptyPageClickHandler}
@@ -171,7 +183,7 @@ export function PageBlockComponent() {
     return (
         <div className="page-page">
             <h1>{page.title}</h1>
-            {isEmpty ? emptyPageComponent : todosComponents}
+            {isEmpty ? emptyPageComponent : blockComponents}
         </div>
     );
 }

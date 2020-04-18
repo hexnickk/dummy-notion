@@ -4,6 +4,9 @@ import {
     Blocks,
     BlocksDTO,
     BlocksState,
+    CheckboxBlock,
+    HeaderBlock,
+    TextBlock,
 } from './blocks.model';
 import { nanoid } from 'nanoid';
 
@@ -27,19 +30,29 @@ export const mapBlocksDTO = (blocksDTO: BlocksDTO): Blocks =>
 
 // Factories
 
-export const textBlockFactory = () => ({
+export const textBlockFactory = (): TextBlock => ({
     id: nanoid(),
-    type: 'text' as 'text',
+    type: 'text',
     title: '',
     children: [],
     createdAt: new Date(),
     updatedAt: new Date(),
 });
 
-export const checkboxBlockFactory = () => ({
+export const checkboxBlockFactory = (): CheckboxBlock => ({
     id: nanoid(),
-    type: 'checkbox' as 'checkbox',
+    type: 'checkbox',
     checked: false,
+    title: '',
+    children: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+export const headerBlockFactory = (): HeaderBlock => ({
+    id: nanoid(),
+    type: 'header',
+    size: 'h1',
     title: '',
     children: [],
     createdAt: new Date(),
@@ -139,6 +152,8 @@ export const blockFactoryStrategy = (type: Block['type']) => {
     switch (type) {
         case 'checkbox':
             return checkboxBlockFactory;
+        case 'header':
+            return headerBlockFactory;
         default:
             return textBlockFactory;
     }
@@ -208,7 +223,7 @@ export const _convertBlockTo = ({
     const stateWithoutTarget = _replaceStateBlock({
         state,
         target,
-        source
+        source,
     });
     const parentWithReplacedTarget = _replaceBlockChild({
         parent,

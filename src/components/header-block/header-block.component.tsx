@@ -1,14 +1,14 @@
 import React, { ChangeEvent, useRef, useEffect, KeyboardEvent } from 'react';
-import { TextBlock, InputBasedBlockComponentProps } from '~src/stores/blocks';
+import { InputBasedBlockComponentProps, HeaderBlock } from '~src/stores/blocks';
 
-export const TextBlockComponent = React.memo(
+export const HeaderBlockComponent = React.memo(
     ({
         block,
         focused,
         onClick,
         onKeyDown,
         onChange,
-    }: InputBasedBlockComponentProps<TextBlock>) => {
+    }: InputBasedBlockComponentProps<HeaderBlock>) => {
         const containerNode = useRef<HTMLDivElement>();
         const inputNode = useRef<HTMLInputElement>();
 
@@ -31,13 +31,15 @@ export const TextBlockComponent = React.memo(
                 ref={containerNode}
                 onClick={onClick}
             >
-                <input
-                    className="block-component__title"
-                    ref={inputNode}
-                    value={block.title}
-                    onChange={onChangeHandler}
-                    onKeyDown={onKeyDownHandler}
-                ></input>
+                <h1>
+                    <input
+                        className="block-component__title"
+                        ref={inputNode}
+                        value={block.title}
+                        onChange={onChangeHandler}
+                        onKeyDown={onKeyDownHandler}
+                    ></input>
+                </h1>
             </div>
         );
     }

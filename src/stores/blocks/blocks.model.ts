@@ -2,21 +2,12 @@ import { KeyboardEvent } from 'react';
 
 export type BlocksState = Blocks;
 
-export interface BaseBlock {
+interface BaseBlock {
     id: string;
     children: Array<BaseBlock['id']>;
     createdAt: Date;
     updatedAt: Date;
 }
-
-export type BaseBlocks = BaseBlock[];
-
-export type BaseBlockDTO = Omit<BaseBlock, 'createdAt' | 'updatedAt'> & {
-    createdAt: number;
-    updatedAt: number;
-};
-
-export type BaseBlocksDTO = BaseBlockDTO[];
 
 export interface CheckboxBlock extends BaseBlock {
     type: 'checkbox';
@@ -62,7 +53,23 @@ export type PageBlockDTO = Omit<PageBlock, 'createdAt' | 'updatedAt'> & {
     updatedAt: number;
 };
 
-export type Block = CheckboxBlock | RootBlock | PageBlock | TextBlock;
+export interface HeaderBlock extends BaseBlock {
+    type: 'header';
+    size: 'h1' | 'h2' | 'h3' | 'h4';
+    title: string;
+}
+
+export type HeaderBlockDTO = Omit<HeaderBlock, 'createdAt' | 'updatedAt'> & {
+    createdAt: number;
+    updatedAt: number;
+};
+
+export type Block =
+    | CheckboxBlock
+    | RootBlock
+    | PageBlock
+    | TextBlock
+    | HeaderBlock;
 
 export type Blocks = Block[];
 
@@ -70,11 +77,12 @@ export type BlockDTO =
     | RootBlockDTO
     | CheckboxBlockDTO
     | PageBlockDTO
-    | TextBlockDTO;
+    | TextBlockDTO
+    | HeaderBlockDTO;
 
 export type BlocksDTO = BlockDTO[];
 
-export type InputBasedBlock = TextBlock | CheckboxBlock;
+export type InputBasedBlock = TextBlock | CheckboxBlock | HeaderBlock;
 
 export interface BlockComponentProps<T extends Block = Block> {
     block: T;
