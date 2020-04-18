@@ -5,12 +5,22 @@ export interface AddChildToEnd {
     parent: Block;
     child: Block;
 }
-export const addChildToEnd = blocksDomain.createEvent<AddChildToEnd>('Add child to the end');
+export const addChildToEnd = blocksDomain.createEvent<AddChildToEnd>(
+    'Add child to the end'
+);
 export interface AddChildNextTo {
     parent: Block;
     child: Block;
     neighbour: Block;
 }
-export const addChildNextTo = blocksDomain.createEvent<AddChildNextTo>('Add child next to element')
+export const addChildNextTo = blocksDomain.createEvent<AddChildNextTo>(
+    'Add child next to element'
+);
 export const updateBlock = blocksDomain.createEvent<Block>('Update block');
-export const deleteBlock = blocksDomain.createEvent<Block>('Remove block');
+export interface DeleteBlock {
+    parent: Block;
+    target: Block;
+}
+export const deleteBlock = blocksDomain.createEvent<DeleteBlock>(
+    'Remove block'
+);

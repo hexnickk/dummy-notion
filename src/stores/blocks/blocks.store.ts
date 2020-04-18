@@ -1,10 +1,4 @@
-import {
-    Block,
-    Blocks,
-    CheckboxBlock,
-    PageBlock,
-    RootBlock,
-} from './blocks.model';
+import { Block, Blocks, PageBlock, RootBlock } from './blocks.model';
 import { fetchBlocksFx } from './blocks.effects';
 import {
     addChildNextTo,
@@ -45,11 +39,11 @@ export const $rootBlockStore = $blocksStore.map((state) =>
     state.find((block) => block.type === 'root')
 );
 
-export const childrenBlocksStore = <T extends Block = Block>(
-    parent: Block,
-) =>
+export const childrenBlocksStore = <T extends Block = Block>(parent: Block) =>
     $blocksStore.map((state) => {
-        return parent.children.map(child => state.find(block => block.id === child) as T)
+        return parent.children.map(
+            (child) => state.find((block) => block.id === child) as T
+        );
     });
 
 export const findBlockStore = <T extends Block = Block>(
@@ -95,6 +89,17 @@ $blocksStore
     .on(updateBlock, (state, payload) => {
         return state.map((item) => (item.id === payload.id ? payload : item));
     })
-    .on(deleteBlock, (state, payload) => {
-        return state.filter((item) => item.id !== payload.id);
+    .on(deleteBlock, (state, { parent, target }) => {
+        return state
+            .filter((item) => item.id !== target.id)
+            .map((item) =>
+                item.id === parent.id
+                    ? {
+                          ...parent,
+                          children: parent.children.filter(
+                              (child) => child !== target.id
+                          ),
+                      }
+                    : item
+            );
     });
