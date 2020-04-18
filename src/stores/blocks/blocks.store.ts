@@ -1,13 +1,21 @@
-import { Block, Blocks, PageBlock, RootBlock } from './blocks.model';
+import { Block, BlocksState, PageBlock, RootBlock } from './blocks.model';
 import { fetchBlocksFx } from './blocks.effects';
 import {
-    addChildNextTo,
-    addChildToEnd,
+    insertBlock,
+    pushBlock,
+    convertBlock,
     deleteBlock,
     updateBlock,
 } from './blocks.events';
 import { blocksDomain } from './blocks.domain';
 import { nanoid } from 'nanoid';
+import {
+    _pushBlock,
+    _convertBlockTo,
+    _deleteBlock,
+    _updateStateBlock,
+    _insertBlock,
+} from './blocks.utils';
 
 const firstPage: PageBlock = {
     id: nanoid(),
@@ -26,10 +34,7 @@ const rootBlock: RootBlock = {
     updatedAt: new Date(),
 };
 
-type BlocksState = Blocks;
-
 const initialState: BlocksState = [rootBlock, firstPage];
-
 export const $blocksStore = blocksDomain.createStore<BlocksState>([], {
     name: 'Blocks store',
 });
@@ -60,46 +65,28 @@ $blocksStore.on(
 
 // Events
 $blocksStore
-    .on(addChildToEnd, (state, { parent, child }) => {
-        return [...state, child].map((block) =>
-            block.id === parent.id
-                ? {
-                      ...parent,
-                      children: [...parent.children, child.id],
-                  }
-                : block
-        );
+    .on(pushBlock, (state, { parent, target }) => {
+        return _pushBlock({ state, parent, target });
     })
-    .on(addChildNextTo, (state, { parent, child, neighbour }) => {
-        return [...state, child].map((block) =>
-            block.id === parent.id
-                ? {
-                      ...parent,
-                      children: parent.children.reduce(
-                          (acc, cur) =>
-                              cur === neighbour.id
-                                  ? [...acc, cur, child.id]
-                                  : [...acc, cur],
-                          []
-                      ),
-                  }
-                : block
-        );
+    .on(insertBlock, (state, { parent, target, position }) => {
+        return _insertBlock({
+            state,
+            parent,
+            target,
+            position,
+        });
     })
     .on(updateBlock, (state, payload) => {
-        return state.map((item) => (item.id === payload.id ? payload : item));
+        return _updateStateBlock(state, payload);
     })
     .on(deleteBlock, (state, { parent, target }) => {
-        return state
-            .filter((item) => item.id !== target.id)
-            .map((item) =>
-                item.id === parent.id
-                    ? {
-                          ...parent,
-                          children: parent.children.filter(
-                              (child) => child !== target.id
-                          ),
-                      }
-                    : item
-            );
+        return _deleteBlock({ state, parent, target });
+    })
+    .on(convertBlock, (state, { parent, target, type }) => {
+        return _convertBlockTo({
+            state,
+            parent,
+            target,
+            type,
+        });
     });

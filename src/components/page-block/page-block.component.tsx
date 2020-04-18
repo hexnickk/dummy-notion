@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
+import './page-block.component.scss';
+
 import { useStore } from 'effector-react';
 import {
     deleteBlock,
@@ -7,17 +9,28 @@ import {
     PageBlock,
     childrenBlocksStore,
     Block,
-    addChildToEnd,
-    checkboxFactory,
-    addChildNextTo,
+    pushBlock,
+    checkboxBlockFactory,
+    insertBlock,
+    InputBasedBlock,
+    textBlockFactory,
+    convertBlock,
 } from '~src/stores/blocks';
-import './page-block.component.scss';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
+import { TextBlockComponent } from '~src/components/text-block/text-block.components';
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
+const childFactoryStrategy = (block: Block) => {
+    switch (block.type) {
+        case 'checkbox':
+            return checkboxBlockFactory;
+        default:
+            return textBlockFactory;
+    }
+};
 
 export function PageBlockComponent() {
     const { blockPageId } = useParams();
@@ -44,16 +57,19 @@ export function PageBlockComponent() {
         setFocused(index);
     };
 
-    const blockOnSubmitHandler = (block: Block) => {
-        addChildNextTo({
+    const createChildBlockHandler = (initializer: Block) => {
+        const childFactory = childFactoryStrategy(initializer);
+        const target = childFactory();
+        const position = page.children.indexOf(initializer.id);
+        insertBlock({
             parent: page,
-            child: checkboxFactory(),
-            neighbour: block,
+            target,
+            position,
         });
         forceFocusNextBlock();
     };
 
-    const deleteBlockHandler = (block: Block) => {
+    const blockDeleteHandler = (block: Block) => {
         deleteBlock({
             parent: page,
             target: block,
@@ -61,20 +77,65 @@ export function PageBlockComponent() {
         focusPreviousBlock();
     };
 
+    const blockKeyPressHandler = (
+        block: InputBasedBlock,
+        e: KeyboardEvent<HTMLInputElement>
+    ) => {
+        switch (e.key) {
+            case 'Backspace':
+            case 'Delete':
+                if (block.title === '') {
+                    e.preventDefault();
+                    blockDeleteHandler(block);
+                }
+                break;
+            case 'Enter':
+                e.preventDefault();
+                createChildBlockHandler(block);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                focusPreviousBlock();
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                focusNextBlock();
+                break;
+            case ']':
+                if (block.title === '[') {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'checkbox' as 'checkbox',
+                    });
+                }
+                break;
+        }
+    };
+
     const blockFactory = (block: Block, index: number) => {
         switch (block.type) {
+            case 'text':
+                return (
+                    <TextBlockComponent
+                        key={block.id}
+                        block={block}
+                        focused={index === focused}
+                        onChange={updateBlock}
+                        onClick={focusSetBlock(index)}
+                        onKeyDown={blockKeyPressHandler}
+                    ></TextBlockComponent>
+                );
             case 'checkbox':
                 return (
                     <CheckboxBlockComponent
                         key={block.id}
                         block={block}
                         focused={index === focused}
-                        onUpdate={updateBlock}
-                        onDelete={deleteBlockHandler}
-                        onNext={focusNextBlock}
+                        onChange={updateBlock}
                         onClick={focusSetBlock(index)}
-                        onPrevious={focusPreviousBlock}
-                        onSubmit={blockOnSubmitHandler}
+                        onKeyDown={blockKeyPressHandler}
                     ></CheckboxBlockComponent>
                 );
             default:
@@ -83,9 +144,9 @@ export function PageBlockComponent() {
     };
 
     const emptyPageClickHandler = () => {
-        addChildToEnd({
+        pushBlock({
             parent: page,
-            child: checkboxFactory(),
+            target: checkboxBlockFactory(),
         });
     };
 

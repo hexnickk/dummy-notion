@@ -1,26 +1,38 @@
 import { blocksDomain } from './blocks.domain';
 import { Block } from './blocks.model';
 
-export interface AddChildToEnd {
+export interface PushBlock {
     parent: Block;
-    child: Block;
+    target: Block;
 }
-export const addChildToEnd = blocksDomain.createEvent<AddChildToEnd>(
-    'Add child to the end'
+export const pushBlock = blocksDomain.createEvent<PushBlock>(
+    'Push block to the end'
 );
-export interface AddChildNextTo {
+
+export interface InsertBlock {
     parent: Block;
-    child: Block;
-    neighbour: Block;
+    target: Block;
+    position: number;
 }
-export const addChildNextTo = blocksDomain.createEvent<AddChildNextTo>(
+export const insertBlock = blocksDomain.createEvent<InsertBlock>(
     'Add child next to element'
 );
+
 export const updateBlock = blocksDomain.createEvent<Block>('Update block');
+
 export interface DeleteBlock {
     parent: Block;
     target: Block;
 }
 export const deleteBlock = blocksDomain.createEvent<DeleteBlock>(
     'Remove block'
+);
+
+export interface ConvertBlock {
+    parent: Block;
+    target: Block;
+    type: Block['type'];
+}
+export const convertBlock = blocksDomain.createEvent<ConvertBlock>(
+    'Convert block'
 );
