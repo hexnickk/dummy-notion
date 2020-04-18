@@ -15,6 +15,7 @@ import {
     InputBasedBlock,
     textBlockFactory,
     convertBlock,
+    blockFactoryStrategy,
 } from '~src/stores/blocks';
 import { useParams } from 'react-router-dom';
 import { CheckboxBlockComponent } from '~src/components/checkbox-block';
@@ -23,14 +24,6 @@ import { TextBlockComponent } from '~src/components/text-block/text-block.compon
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
-const childFactoryStrategy = (block: Block) => {
-    switch (block.type) {
-        case 'checkbox':
-            return checkboxBlockFactory;
-        default:
-            return textBlockFactory;
-    }
-};
 
 export function PageBlockComponent() {
     const { blockPageId } = useParams();
@@ -58,7 +51,7 @@ export function PageBlockComponent() {
     };
 
     const createChildBlockHandler = (initializer: Block) => {
-        const childFactory = childFactoryStrategy(initializer);
+        const childFactory = blockFactoryStrategy(initializer.type);
         const target = childFactory();
         const position = page.children.indexOf(initializer.id);
         insertBlock({
@@ -69,7 +62,7 @@ export function PageBlockComponent() {
         forceFocusNextBlock();
     };
 
-    const blockDeleteHandler = (block: Block) => {
+    const deleteBlockHandler = (block: Block) => {
         deleteBlock({
             parent: page,
             target: block,
@@ -84,9 +77,21 @@ export function PageBlockComponent() {
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
-                if (block.title === '') {
+                const isEmptyTitle = block.title === '';
+                const isTextBlock = block.type === 'text';
+                if (isEmptyTitle && isTextBlock) {
                     e.preventDefault();
-                    blockDeleteHandler(block);
+                    deleteBlockHandler(block);
+                    break;
+                }
+                if (isEmptyTitle) {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'text',
+                    });
+                    break;
                 }
                 break;
             case 'Enter':
@@ -146,7 +151,7 @@ export function PageBlockComponent() {
     const emptyPageClickHandler = () => {
         pushBlock({
             parent: page,
-            target: checkboxBlockFactory(),
+            target: textBlockFactory(),
         });
     };
 

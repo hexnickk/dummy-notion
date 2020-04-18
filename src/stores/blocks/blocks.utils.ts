@@ -59,6 +59,16 @@ export const _pushStateBlock = ({
     target: Block;
 }) => [...state, target];
 
+export const _replaceStateBlock = ({
+    state,
+    target,
+    source,
+}: {
+    state: BlocksState;
+    target: Block;
+    source: Block;
+}) => state.map((item) => (item.id === target.id ? source : item));
+
 export const _deleteStateBlock = ({
     state,
     target,
@@ -101,14 +111,38 @@ export const _insertBlockChild = ({
     return {
         ...parent,
         children: parent.children.reduce(
-            (acc, curr, index) =>
-                index === position ? [...acc, curr, target.id] : [...acc, curr],
+            (acc, cur, index) =>
+                index === position ? [...acc, cur, target.id] : [...acc, cur],
             []
         ),
     };
 };
 
+export const _replaceBlockChild = ({
+    parent,
+    target,
+    source,
+}: {
+    parent: Block;
+    target: Block;
+    source: Block;
+}) => ({
+    ...parent,
+    children: parent.children.map((child) =>
+        child === target.id ? source.id : child
+    ),
+});
+
 // Other utils
+
+export const blockFactoryStrategy = (type: Block['type']) => {
+    switch (type) {
+        case 'checkbox':
+            return checkboxBlockFactory;
+        default:
+            return textBlockFactory;
+    }
+};
 
 export const _pushBlock = ({
     state,
@@ -168,10 +202,18 @@ export const _convertBlockTo = ({
     target: Block;
     type: Block['type'];
 }) => {
-    // const blockWithoutTarget = _deleteBlock({
-    //     state,
-    //     parent,
-    //     target,
-    // });
-    return state;
+    const blockFactory = blockFactoryStrategy(type);
+    const source = blockFactory();
+
+    const stateWithoutTarget = _replaceStateBlock({
+        state,
+        target,
+        source
+    });
+    const parentWithReplacedTarget = _replaceBlockChild({
+        parent,
+        target,
+        source,
+    });
+    return _updateStateBlock(stateWithoutTarget, parentWithReplacedTarget);
 };
