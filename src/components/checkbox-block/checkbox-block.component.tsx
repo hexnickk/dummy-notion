@@ -37,19 +37,18 @@ export const CheckboxBlockComponent = React.memo(
 
         return (
             <div
-                className="checkbox-block"
+                className="block-component"
                 ref={containerNode}
                 onClick={onClick}
             >
                 <input
                     type="checkbox"
-                    className="checkbox-block__checkbox"
                     checked={block.checked}
                     onChange={onCheckChangeHandler}
                 ></input>
                 &nbsp;
                 <input
-                    className="checkbox-block__title"
+                    className="block-component__title"
                     ref={inputNode}
                     value={block.title}
                     onChange={onChangeHandler}

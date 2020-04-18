@@ -27,9 +27,9 @@ export const TextBlockComponent = React.memo(
         };
 
         return (
-            <div className="text-block" ref={containerNode} onClick={onClick}>
+            <div className="block-component" ref={containerNode} onClick={onClick}>
                 <input
-                    className="text-block__title"
+                    className="block-component__title"
                     ref={inputNode}
                     value={block.title}
                     onChange={onChangeHandler}

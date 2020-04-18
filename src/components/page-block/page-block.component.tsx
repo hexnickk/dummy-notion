@@ -10,7 +10,6 @@ import {
     childrenBlocksStore,
     Block,
     pushBlock,
-    checkboxBlockFactory,
     insertBlock,
     InputBasedBlock,
     textBlockFactory,
@@ -74,11 +73,11 @@ export function PageBlockComponent() {
         block: InputBasedBlock,
         e: KeyboardEvent<HTMLInputElement>
     ) => {
+        const isEmptyTitle = block.title === '';
+        const isTextBlock = block.type === 'text';
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
-                const isEmptyTitle = block.title === '';
-                const isTextBlock = block.type === 'text';
                 if (isEmptyTitle && isTextBlock) {
                     e.preventDefault();
                     deleteBlockHandler(block);
@@ -96,6 +95,14 @@ export function PageBlockComponent() {
                 break;
             case 'Enter':
                 e.preventDefault();
+                if (isEmptyTitle && !isTextBlock) {
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'text' as 'text',
+                    });
+                    break;
+                }
                 createChildBlockHandler(block);
                 break;
             case 'ArrowUp':
@@ -107,7 +114,7 @@ export function PageBlockComponent() {
                 focusNextBlock();
                 break;
             case ']':
-                if (block.title === '[') {
+                if (block.title === '[' && block.type !== 'checkbox') {
                     e.preventDefault();
                     convertBlock({
                         parent: page,
