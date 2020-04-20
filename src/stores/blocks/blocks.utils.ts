@@ -30,30 +30,40 @@ export const mapBlocksDTO = (blocksDTO: BlocksDTO): Blocks =>
 
 // Factories
 
-export const textBlockFactory = (): TextBlock => ({
+export const textBlockFactory = (options: Partial<Block> = {}): TextBlock => ({
+    title: '',
+    // We need to be able to only override ^
+    ...options,
     id: nanoid(),
     type: 'text',
-    title: '',
     children: [],
     createdAt: new Date(),
     updatedAt: new Date(),
 });
 
-export const checkboxBlockFactory = (): CheckboxBlock => ({
-    id: nanoid(),
-    type: 'checkbox',
+export const checkboxBlockFactory = (
+    options: Partial<Block> = {}
+): CheckboxBlock => ({
     checked: false,
     title: '',
+    // We need to be able to only override ^
+    ...options,
+    id: nanoid(),
+    type: 'checkbox',
     children: [],
     createdAt: new Date(),
     updatedAt: new Date(),
 });
 
-export const headerBlockFactory = (): HeaderBlock => ({
-    id: nanoid(),
-    type: 'header',
+export const headerBlockFactory = (
+    options: Partial<Block> = {}
+): HeaderBlock => ({
     size: 'h1',
     title: '',
+    // We need to be able to only override ^
+    ...options,
+    id: nanoid(),
+    type: 'header',
     children: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -211,14 +221,16 @@ export const _convertBlockTo = ({
     parent,
     target,
     type,
+    options,
 }: {
     state: BlocksState;
     parent: Block;
     target: Block;
     type: Block['type'];
+    options?: Partial<Block>;
 }) => {
     const blockFactory = blockFactoryStrategy(type);
-    const source = blockFactory();
+    const source = blockFactory(options);
 
     const stateWithoutTarget = _replaceStateBlock({
         state,

@@ -65,28 +65,23 @@ $blocksStore.on(
 
 // Events
 $blocksStore
-    .on(pushBlock, (state, { parent, target }) => {
-        return _pushBlock({ state, parent, target });
+    .on(pushBlock, (state, payload) => {
+        return _pushBlock({ state, ...payload });
     })
-    .on(insertBlock, (state, { parent, target, position }) => {
+    .on(insertBlock, (state, payload) => {
         return _insertBlock({
             state,
-            parent,
-            target,
-            position,
+            ...payload,
         });
     })
     .on(updateBlock, (state, payload) => {
         return _updateStateBlock(state, payload);
     })
-    .on(deleteBlock, (state, { parent, target }) => {
-        return _deleteBlock({ state, parent, target });
+    .on(deleteBlock, (state, payload) => {
+        return _deleteBlock({ state, ...payload });
     })
-    .on(convertBlock, (state, { parent, target, type }) => {
-        return _convertBlockTo({
-            state,
-            parent,
-            target,
-            type,
-        });
+    .on(convertBlock, (state, payload) => {
+        return payload.target.type === payload.type
+            ? state
+            : _convertBlockTo({ state, ...payload });
     });

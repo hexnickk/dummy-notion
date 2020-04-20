@@ -131,12 +131,38 @@ export function PageBlockComponent() {
                 break;
             case ' ':
             case 'Spacebar':
-                if (block.title === '#') {
+                const isNotHeader = block.type !== "header";
+                if (block.title === '#' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
                         parent: page,
                         target: block,
                         type: 'header',
+                        options: { size: 'h1' },
+                    });
+                } else if (block.title === '##' && isNotHeader) {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'header',
+                        options: { size: 'h2' },
+                    });
+                } else if (block.title === '###' && isNotHeader) {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'header',
+                        options: { size: 'h3' },
+                    });
+                } else if (block.title === '####' && isNotHeader) {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'header',
+                        options: { size: 'h4' },
                     });
                 }
         }

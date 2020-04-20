@@ -32,6 +32,7 @@ export interface ConvertBlock {
     parent: Block;
     target: Block;
     type: Block['type'];
+    options?: Partial<Block>;
 }
 export const convertBlock = blocksDomain.createEvent<ConvertBlock>(
     'Convert block'
