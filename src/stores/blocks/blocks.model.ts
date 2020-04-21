@@ -82,7 +82,7 @@ export type BlockDTO =
 
 export type BlocksDTO = BlockDTO[];
 
-export type InputBasedBlock = TextBlock | CheckboxBlock | HeaderBlock;
+export type InputBasedBlock = TextBlock | CheckboxBlock | HeaderBlock | PageBlock;
 
 export interface BlockComponentProps<T extends Block = Block> {
     block: T;

@@ -6,6 +6,7 @@ import {
     BlocksState,
     CheckboxBlock,
     HeaderBlock,
+    PageBlock,
     TextBlock,
 } from './blocks.model';
 import { nanoid } from 'nanoid';
@@ -64,6 +65,17 @@ export const headerBlockFactory = (
     ...options,
     id: nanoid(),
     type: 'header',
+    children: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+});
+
+export const pageBlockFactory = (options: Partial<Block> = {}): PageBlock => ({
+    title: 'Untitled',
+    // We need to be able to only override ^
+    ...options,
+    id: nanoid(),
+    type: 'page',
     children: [],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -164,6 +176,8 @@ export const blockFactoryStrategy = (type: Block['type']) => {
             return checkboxBlockFactory;
         case 'header':
             return headerBlockFactory;
+        case 'page':
+            return pageBlockFactory;
         default:
             return textBlockFactory;
     }

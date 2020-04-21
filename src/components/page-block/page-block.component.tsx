@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
 import './page-block.component.scss';
 
 import { useStore } from 'effector-react';
@@ -21,6 +21,7 @@ import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
 import { TextBlockComponent } from '~src/components/text-block/text-block.components';
 import { HeaderBlockComponent } from '~src/components/header-block';
+import { PageLinkBlockComponent } from '~src/components/page-link-block';
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
@@ -48,6 +49,13 @@ export function PageBlockComponent() {
 
     const focusSetBlock = (index: number) => () => {
         setFocused(index);
+    };
+
+    const pageInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        updateBlock({
+            ...page,
+            title: e.target.value,
+        });
     };
 
     const createChildBlockHandler = (
@@ -79,6 +87,8 @@ export function PageBlockComponent() {
         const isTextBlock = block.type === 'text';
         const isCheckBox = block.type === 'checkbox';
         const isHeaderBlock = block.type === 'header';
+        const isNotHeader = block.type !== 'header';
+        const isNotPage = block.type !== 'page';
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
@@ -131,7 +141,6 @@ export function PageBlockComponent() {
                 break;
             case ' ':
             case 'Spacebar':
-                const isNotHeader = block.type !== "header";
                 if (block.title === '#' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
@@ -164,6 +173,13 @@ export function PageBlockComponent() {
                         type: 'header',
                         options: { size: 'h4' },
                     });
+                } else if (block.title === '/page' && isNotPage) {
+                    e.preventDefault();
+                    convertBlock({
+                        parent: page,
+                        target: block,
+                        type: 'page',
+                    });
                 }
         }
     };
@@ -176,6 +192,8 @@ export function PageBlockComponent() {
                 return CheckboxBlockComponent;
             case 'header':
                 return HeaderBlockComponent;
+            case 'page':
+                return PageLinkBlockComponent;
             default:
                 return (_props: any) => <div>Unsupported block ☹️</div>;
         }
@@ -208,7 +226,13 @@ export function PageBlockComponent() {
     );
     return (
         <div className="page-page">
-            <h1>{page.title}</h1>
+            <h1>
+                <input
+                    className="block-component__title"
+                    value={page.title}
+                    onChange={pageInputChangeHandler}
+                ></input>
+            </h1>
             {isEmpty ? emptyPageComponent : blockComponents}
         </div>
     );
