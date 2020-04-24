@@ -15,7 +15,7 @@ import {
     _deleteBlock,
     _updateStateBlock,
     _insertBlock,
-    _getParent,
+    _pathToPage,
 } from './utils';
 
 const firstPage: PageBlock = {
@@ -56,6 +56,9 @@ export const findBlockStore = <T extends Block = Block>(
     predicate: (block: Block) => boolean
 ) => $blocksStore.map<T>((state) => state.find(predicate) as T);
 
+export const pathToPageStore = (page: PageBlock) =>
+    $blocksStore.map((state) => _pathToPage({ state, page }));
+
 // TODO: add some logging
 
 // Effects
@@ -84,5 +87,5 @@ $blocksStore
     .on(convertBlock, (state, payload) => {
         return payload.target.type === payload.type
             ? state
-            : _convertBlockTo({ state,...payload });
+            : _convertBlockTo({ state, ...payload });
     });

@@ -1,4 +1,4 @@
-import { Block, BlocksState } from '../blocks.model';
+import { Block, BlocksState, PageBlock } from '../blocks.model';
 import {
     checkboxBlockFactory,
     headerBlockFactory,
@@ -7,6 +7,16 @@ import {
 } from './block-factories.utils';
 
 // STATE
+
+export const _getParent = ({
+    state,
+    target,
+}: {
+    state: BlocksState;
+    target: Block;
+}) => {
+    return state.find((block) => block.children.indexOf(target.id) !== -1);
+};
 
 export const _updateStateBlock = (state: BlocksState, target: Block) =>
     state.map((block) => (block.id === target.id ? target : block));
@@ -182,12 +192,38 @@ export const _convertBlockTo = ({
     return _updateStateBlock(stateWithoutTarget, parentWithReplacedTarget);
 };
 
-export const _getParent = ({
+export const _pathToPageIterator = ({
     state,
-    target
+    page,
+    path,
 }: {
-    state: BlocksState,
-    target: Block,
+    path: PageBlock[];
+    state: BlocksState;
+    page: Block;
 }) => {
-    return state.find(block => block.children.indexOf(target.id) !== -1);
-}
+    const parent = _getParent({ state, target: page });
+    if (parent.type === 'root') {
+        return path;
+    }
+    if (page.type !== 'page') {
+        throw new Error(`There is a non page block (${page.id}) on the path`);
+    }
+    return _pathToPageIterator({
+        state,
+        page: parent,
+        path: [parent as PageBlock, ...path],
+    });
+};
+export const _pathToPage = ({
+    state,
+    page,
+}: {
+    state: BlocksState;
+    page: PageBlock;
+}) => {
+    return _pathToPageIterator({
+        state,
+        page,
+        path: [page],
+    });
+};

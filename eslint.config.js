@@ -24,5 +24,6 @@ module.exports = {
             'error',
             { argsIgnorePattern: '^_' },
         ],
+        '@typescript-eslint/no-explicit-any': 'off'
     },
 };

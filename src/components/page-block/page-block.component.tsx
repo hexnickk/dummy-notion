@@ -22,6 +22,7 @@ import { EmptyPageComponent } from '~src/components/empty-page';
 import { TextBlockComponent } from '~src/components/text-block/text-block.components';
 import { HeaderBlockComponent } from '~src/components/header-block';
 import { PageLinkBlockComponent } from '~src/components/page-link-block';
+import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
@@ -227,6 +228,9 @@ export function PageBlockComponent() {
     );
     return (
         <div className="page-page">
+            <PageBlockBreadCrumbComponent
+                page={page}
+            ></PageBlockBreadCrumbComponent>
             <h1>
                 <input
                     className="block-component__title"
