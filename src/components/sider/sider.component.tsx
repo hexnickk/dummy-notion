@@ -1,11 +1,10 @@
 import React from 'react';
-import { Button, Input, Layout, Menu } from 'antd';
+import { Button, Layout, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons/lib';
 import { Link, useLocation } from 'react-router-dom';
 import './sider.component.scss';
 import { PageBlock } from '~src/stores/blocks';
 
-const { Search } = Input;
 const { Sider } = Layout;
 
 interface AppSiderProps {
@@ -30,7 +29,6 @@ export function AppSider({ className, pages }: AppSiderProps) {
     return (
         <Sider className={`${className}`} width="20%">
             <div className="sider">
-                <Search className="sider__search" placeholder="input search" />
                 <div className="sider__title">Private</div>
                 <Menu
                     className="sider__menu"
