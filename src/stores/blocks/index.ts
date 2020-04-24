@@ -3,4 +3,4 @@ export * from './blocks.model';
 export * from './blocks.effects';
 export * from './blocks.events';
 export * from './blocks.init';
-export * from './blocks.utils';
+export * from './utils';

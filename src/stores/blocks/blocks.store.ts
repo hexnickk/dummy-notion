@@ -15,7 +15,8 @@ import {
     _deleteBlock,
     _updateStateBlock,
     _insertBlock,
-} from './blocks.utils';
+    _getParent,
+} from './utils';
 
 const firstPage: PageBlock = {
     id: nanoid(),
@@ -83,5 +84,5 @@ $blocksStore
     .on(convertBlock, (state, payload) => {
         return payload.target.type === payload.type
             ? state
-            : _convertBlockTo({ state, ...payload });
+            : _convertBlockTo({ state,...payload });
     });

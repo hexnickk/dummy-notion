@@ -29,7 +29,6 @@ export const deleteBlock = blocksDomain.createEvent<DeleteBlock>(
 );
 
 export interface ConvertBlock {
-    parent: Block;
     target: Block;
     type: Block['type'];
     options?: Partial<Block>;

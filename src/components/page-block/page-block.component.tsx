@@ -100,7 +100,6 @@ export function PageBlockComponent() {
                 if (isEmptyTitle) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'text',
                     });
@@ -111,7 +110,6 @@ export function PageBlockComponent() {
                 e.preventDefault();
                 if (isEmptyTitle && !isTextBlock) {
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'text' as 'text',
                     });
@@ -133,7 +131,6 @@ export function PageBlockComponent() {
                 if (block.title === '[' && block.type !== 'checkbox') {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'checkbox',
                     });
@@ -144,7 +141,6 @@ export function PageBlockComponent() {
                 if (block.title === '#' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'header',
                         options: { size: 'h1' },
@@ -152,7 +148,6 @@ export function PageBlockComponent() {
                 } else if (block.title === '##' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'header',
                         options: { size: 'h2' },
@@ -160,7 +155,6 @@ export function PageBlockComponent() {
                 } else if (block.title === '###' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'header',
                         options: { size: 'h3' },
@@ -168,7 +162,6 @@ export function PageBlockComponent() {
                 } else if (block.title === '####' && isNotHeader) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'header',
                         options: { size: 'h4' },
@@ -176,7 +169,6 @@ export function PageBlockComponent() {
                 } else if (block.title === '/page' && isNotPage) {
                     e.preventDefault();
                     convertBlock({
-                        parent: page,
                         target: block,
                         type: 'page',
                     });
