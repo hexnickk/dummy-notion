@@ -58,10 +58,7 @@ export function PageBlockComponent() {
         });
     };
 
-    const createChildBlockHandler = (
-        initializer: Block,
-        target: Block = textBlockFactory()
-    ) => {
+    const createChildBlockHandler = (initializer: Block, target: Block) => {
         const position = page.children.indexOf(initializer.id);
         insertBlock({
             parent: page,
@@ -84,15 +81,16 @@ export function PageBlockComponent() {
         e: KeyboardEvent<HTMLInputElement>
     ) => {
         const isEmptyTitle = block.title === '';
+
         const isTextBlock = block.type === 'text';
-        const isCheckBox = block.type === 'checkbox';
+        const isCheckBoxBlock = block.type === 'checkbox';
         const isHeaderBlock = block.type === 'header';
-        const isNotHeader = block.type !== 'header';
-        const isNotPage = block.type !== 'page';
+        const isPageBlock = block.type === 'page';
+
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
-                if (isEmptyTitle && (isTextBlock || isHeaderBlock)) {
+                if (isEmptyTitle && isTextBlock) {
                     e.preventDefault();
                     deleteBlockHandler(block);
                     break;
@@ -111,13 +109,15 @@ export function PageBlockComponent() {
                 if (isEmptyTitle && !isTextBlock) {
                     convertBlock({
                         target: block,
-                        type: 'text' as 'text',
+                        type: 'text',
                     });
-                } else if (isCheckBox) {
-                    createChildBlockHandler(block, checkboxBlockFactory());
-                } else {
-                    createChildBlockHandler(block);
+                    break;
                 }
+                if (isCheckBoxBlock) {
+                    createChildBlockHandler(block, checkboxBlockFactory());
+                    break;
+                }
+                createChildBlockHandler(block, textBlockFactory());
                 break;
             case 'ArrowUp':
                 e.preventDefault();
@@ -138,40 +138,49 @@ export function PageBlockComponent() {
                 break;
             case ' ':
             case 'Spacebar':
-                if (block.title === '#' && isNotHeader) {
+                if (block.title === '#' && !isHeaderBlock) {
                     e.preventDefault();
                     convertBlock({
                         target: block,
                         type: 'header',
                         options: { size: 'h1' },
                     });
-                } else if (block.title === '##' && isNotHeader) {
+                    break;
+                }
+                if (block.title === '##' && !isHeaderBlock) {
                     e.preventDefault();
                     convertBlock({
                         target: block,
                         type: 'header',
                         options: { size: 'h2' },
                     });
-                } else if (block.title === '###' && isNotHeader) {
+                    break;
+                }
+                if (block.title === '###' && !isHeaderBlock) {
                     e.preventDefault();
                     convertBlock({
                         target: block,
                         type: 'header',
                         options: { size: 'h3' },
                     });
-                } else if (block.title === '####' && isNotHeader) {
+                    break;
+                }
+                if (block.title === '####' && !isHeaderBlock) {
                     e.preventDefault();
                     convertBlock({
                         target: block,
                         type: 'header',
                         options: { size: 'h4' },
                     });
-                } else if (block.title === '/page' && isNotPage) {
+                    break;
+                }
+                if (block.title === '/page' && !isPageBlock) {
                     e.preventDefault();
                     convertBlock({
                         target: block,
                         type: 'page',
                     });
+                    break;
                 }
         }
     };
