@@ -1,27 +1,31 @@
 import { blocksDomain } from './blocks.domain';
 import { Block } from './blocks.model';
 
-export interface PushBlock {
+export interface PushChild {
     parent: Block;
-    target: Block;
+    child: Block;
 }
-export const pushBlock = blocksDomain.createEvent<PushBlock>(
-    'Push block to the end'
+export const pushChild = blocksDomain.createEvent<PushChild>(
+    'Push child to the block'
 );
 
-export interface InsertBlock {
+export interface UpdateBlock {
+    target: Block;
+}
+export const updateBlock = blocksDomain.createEvent<UpdateBlock>(
+    'Update block'
+);
+
+export interface InsertChild {
     parent: Block;
     target: Block;
     position: number;
 }
-export const insertBlock = blocksDomain.createEvent<InsertBlock>(
-    'Add child next to element'
+export const insertChild = blocksDomain.createEvent<InsertChild>(
+    'Insert child to the block'
 );
 
-export const updateBlock = blocksDomain.createEvent<Block>('Update block');
-
 export interface DeleteBlock {
-    parent: Block;
     target: Block;
 }
 export const deleteBlock = blocksDomain.createEvent<DeleteBlock>(

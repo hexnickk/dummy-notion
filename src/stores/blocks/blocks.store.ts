@@ -1,8 +1,8 @@
 import { Block, BlocksState, PageBlock, RootBlock } from './blocks.model';
 import { fetchBlocksFx } from './blocks.effects';
 import {
-    insertBlock,
-    pushBlock,
+    insertChild,
+    pushChild,
     convertBlock,
     deleteBlock,
     updateBlock,
@@ -10,12 +10,13 @@ import {
 import { blocksDomain } from './blocks.domain';
 import { nanoid } from 'nanoid';
 import {
-    _pushBlock,
+    _pushChild,
     _convertBlockTo,
     _deleteBlock,
-    _updateStateBlock,
     _insertBlock,
     _pathToPage,
+    _findBlock,
+    _updateBlock,
 } from './utils';
 
 const firstPage: PageBlock = {
@@ -30,62 +31,52 @@ const firstPage: PageBlock = {
 const rootBlock: RootBlock = {
     id: nanoid(),
     type: 'root',
-    children: [firstPage.id],
+    children: [firstPage],
     createdAt: new Date(),
     updatedAt: new Date(),
 };
 
-const initialState: BlocksState = [rootBlock, firstPage];
-export const $blocksStore = blocksDomain.createStore<BlocksState>([], {
-    name: 'Blocks store',
-});
-
-// Selectors
-export const $rootBlockStore = $blocksStore.map((state) =>
-    state.find((block) => block.type === 'root')
+const initialState: BlocksState = rootBlock;
+export const $blocksStore = blocksDomain.createStore<BlocksState>(
+    initialState,
+    {
+        name: 'Blocks store',
+    }
 );
 
-export const childrenBlocksStore = <T extends Block = Block>(parent: Block) =>
-    $blocksStore.map((state) => {
-        return parent.children.map(
-            (child) => state.find((block) => block.id === child) as T
-        );
-    });
+// Selectors
+export const $rootBlockStore = $blocksStore.map((state) => state);
 
 export const findBlockStore = <T extends Block = Block>(
     predicate: (block: Block) => boolean
-) => $blocksStore.map<T>((state) => state.find(predicate) as T);
+) => $blocksStore.map<T>((state) => _findBlock(state, predicate) as T);
 
 export const pathToPageStore = (page: PageBlock) =>
-    $blocksStore.map((state) => _pathToPage({ state, page }));
+    $blocksStore.map((state) => _pathToPage(state, page));
 
 // TODO: add some logging
 
 // Effects
-$blocksStore.on(
-    fetchBlocksFx.doneData,
-    (state, payload) => payload ?? initialState
-);
+$blocksStore.on(fetchBlocksFx.doneData, (state, payload) => {
+    return payload ?? state;
+});
 
 // Events
 $blocksStore
-    .on(pushBlock, (state, payload) => {
-        return _pushBlock({ state, ...payload });
+    .on(pushChild, (state, { parent, child }) => {
+        return _pushChild(state, parent, child);
     })
-    .on(insertBlock, (state, payload) => {
-        return _insertBlock({
-            state,
-            ...payload,
-        });
+    .on(updateBlock, (state, { target }) => {
+        return _updateBlock(state, target);
     })
-    .on(updateBlock, (state, payload) => {
-        return _updateStateBlock(state, payload);
+    .on(deleteBlock, (state, { target }) => {
+        return _deleteBlock(state, target);
     })
-    .on(deleteBlock, (state, payload) => {
-        return _deleteBlock({ state, ...payload });
+    .on(insertChild, (state, { target, position, parent }) => {
+        return _insertBlock(state, parent, target, position);
     })
-    .on(convertBlock, (state, payload) => {
-        return payload.target.type === payload.type
+    .on(convertBlock, (state, { target, type, options }) => {
+        return target.type === type
             ? state
-            : _convertBlockTo({ state, ...payload });
+            : _convertBlockTo(state, target, type, options);
     });

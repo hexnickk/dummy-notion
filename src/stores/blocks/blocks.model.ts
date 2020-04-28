@@ -1,57 +1,60 @@
 import { KeyboardEvent } from 'react';
 
-export type BlocksState = Blocks;
+export type BlocksState = Block;
 
 interface BaseBlock {
     id: string;
-    children: Array<BaseBlock['id']>;
+    children: Array<Block>;
     createdAt: Date;
     updatedAt: Date;
+}
+
+interface BaseBlockDTO {
+    id: string;
+    children: Array<BlockDTO>;
+    createdAt: number;
+    updatedAt: number;
 }
 
 export interface CheckboxBlock extends BaseBlock {
     type: 'checkbox';
     title: string;
     checked: boolean;
-    description?: string;
 }
 
-export type CheckboxBlockDTO = Omit<
-    CheckboxBlock,
-    'createdAt' | 'updatedAt'
-> & {
-    createdAt: number;
-    updatedAt: number;
-};
+export interface CheckboxBlockDTO extends BaseBlockDTO {
+    type: 'checkbox';
+    title: string;
+    checked: boolean;
+}
 
 export interface TextBlock extends BaseBlock {
     type: 'text';
     title: string;
 }
 
-export type TextBlockDTO = Omit<TextBlock, 'createdAt' | 'updatedAt'> & {
-    createdAt: number;
-    updatedAt: number;
-};
+export interface TextBlockDTO extends BaseBlockDTO {
+    type: 'text';
+    title: string;
+}
 
 export interface RootBlock extends BaseBlock {
     type: 'root';
 }
 
-export type RootBlockDTO = Omit<RootBlock, 'createdAt' | 'updatedAt'> & {
-    createdAt: number;
-    updatedAt: number;
-};
+export interface RootBlockDTO extends BaseBlockDTO {
+    type: 'root';
+}
 
 export interface PageBlock extends BaseBlock {
     type: 'page';
     title: string;
 }
 
-export type PageBlockDTO = Omit<PageBlock, 'createdAt' | 'updatedAt'> & {
-    createdAt: number;
-    updatedAt: number;
-};
+export interface PageBlockDTO extends BaseBlockDTO {
+    type: 'page';
+    title: string;
+}
 
 export interface HeaderBlock extends BaseBlock {
     type: 'header';
@@ -59,10 +62,11 @@ export interface HeaderBlock extends BaseBlock {
     title: string;
 }
 
-export type HeaderBlockDTO = Omit<HeaderBlock, 'createdAt' | 'updatedAt'> & {
-    createdAt: number;
-    updatedAt: number;
-};
+export interface HeaderBlockDTO extends BaseBlockDTO {
+    type: 'header';
+    size: 'h1' | 'h2' | 'h3' | 'h4';
+    title: string;
+}
 
 export type Block =
     | CheckboxBlock

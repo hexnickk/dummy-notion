@@ -1,24 +1,24 @@
 import { blocksDomain } from './blocks.domain';
-import { Blocks } from './blocks.model';
-import { mapBlocks, mapBlocksDTO } from './utils';
+import { Block } from './blocks.model';
+import { mapBlock, mapBlockDTO } from './utils';
 
 const config = {
     blocksStorageKey: 'blocks',
 };
 
-export const fetchBlocksFx = blocksDomain.createEffect<void, Blocks>({
+export const fetchBlocksFx = blocksDomain.createEffect<void, Block>({
     name: 'Fetch blocks',
     handler: (_) => {
         const data = localStorage.getItem(config.blocksStorageKey);
-        return data ? mapBlocksDTO(JSON.parse(data)) : undefined;
+        return data ? mapBlockDTO(JSON.parse(data)) : undefined;
     },
 });
 
-export const saveBlocksFx = blocksDomain.createEffect<Blocks, void>({
+export const saveBlocksFx = blocksDomain.createEffect<Block, void>({
     name: 'Save blocks',
     handler: (params) =>
         localStorage.setItem(
             config.blocksStorageKey,
-            JSON.stringify(mapBlocks(params))
+            JSON.stringify(mapBlock(params))
         ),
 });

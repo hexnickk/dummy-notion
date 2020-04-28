@@ -7,10 +7,9 @@ import {
     updateBlock,
     findBlockStore,
     PageBlock,
-    childrenBlocksStore,
     Block,
-    pushBlock,
-    insertBlock,
+    pushChild,
+    insertChild,
     InputBasedBlock,
     textBlockFactory,
     convertBlock,
@@ -33,7 +32,7 @@ export function PageBlockComponent() {
     const page = useStore(
         findBlockStore<PageBlock>((block) => block.id === blockPageId)
     );
-    const children = useStore(childrenBlocksStore(page));
+    const children = page.children;
     const isEmpty = !children || children.length === 0;
 
     const focusNextBlock = () => {
@@ -53,15 +52,20 @@ export function PageBlockComponent() {
     };
 
     const pageInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        updateBlock({
+        const updatedBlock: Block = {
             ...page,
             title: e.target.value,
+        };
+        updateBlock({
+            target: updatedBlock,
         });
     };
 
     const createChildBlockHandler = (initializer: Block, target: Block) => {
-        const position = page.children.indexOf(initializer.id);
-        insertBlock({
+        const position = page.children.findIndex(
+            (item) => item.id === initializer.id
+        );
+        insertChild({
             parent: page,
             target: target,
             position,
@@ -71,7 +75,6 @@ export function PageBlockComponent() {
 
     const deleteBlockHandler = (block: Block) => {
         deleteBlock({
-            parent: page,
             target: block,
         });
         focusPreviousBlock();
@@ -202,10 +205,14 @@ export function PageBlockComponent() {
     };
 
     const emptyPageClickHandler = () => {
-        pushBlock({
+        pushChild({
             parent: page,
-            target: textBlockFactory(),
+            child: textBlockFactory(),
         });
+    };
+
+    const blockOnChangeHandler = (block: Block) => {
+        updateBlock({ target: block });
     };
 
     const blockComponents = children.map((block, index) => {
@@ -215,7 +222,7 @@ export function PageBlockComponent() {
                 key={block.id}
                 block={block}
                 focused={index === focused}
-                onChange={updateBlock}
+                onChange={blockOnChangeHandler}
                 onClick={focusSetBlock(index)}
                 onKeyDown={blockKeyPressHandler}
             ></BlockComponent>
