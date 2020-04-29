@@ -16,12 +16,9 @@ import {
     checkboxBlockFactory,
 } from '~src/stores/blocks';
 import { useParams } from 'react-router-dom';
-import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
-import { TextBlockComponent } from '~src/components/text-block/text-block.components';
-import { HeaderBlockComponent } from '~src/components/header-block';
-import { PageLinkBlockComponent } from '~src/components/page-link-block';
 import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
+import { FactoryBlockComponent } from '~src/components/factory-block';
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
@@ -189,21 +186,6 @@ export function PageBlockComponent() {
         }
     };
 
-    const blockComponentFactory = (block: Block) => {
-        switch (block.type) {
-            case 'text':
-                return TextBlockComponent;
-            case 'checkbox':
-                return CheckboxBlockComponent;
-            case 'header':
-                return HeaderBlockComponent;
-            case 'page':
-                return PageLinkBlockComponent;
-            default:
-                return (_props: any) => <div>Unsupported block ☹️</div>;
-        }
-    };
-
     const emptyPageClickHandler = () => {
         pushChild({
             parent: page,
@@ -215,19 +197,20 @@ export function PageBlockComponent() {
         updateBlock({ target: block });
     };
 
-    const blockComponents = children.map((block, index) => {
-        const BlockComponent = blockComponentFactory(block);
-        return (
-            <BlockComponent
-                key={block.id}
-                block={block}
-                focused={index === focused}
-                onChange={blockOnChangeHandler}
-                onClick={focusSetBlock(index)}
-                onKeyDown={blockKeyPressHandler}
-            ></BlockComponent>
-        );
-    });
+    const blocksComponents = (
+        <div className="page__blocks">
+            {children.map((block, index) => (
+                <FactoryBlockComponent
+                    key={block.id}
+                    block={block}
+                    focused={index === focused}
+                    onChange={blockOnChangeHandler}
+                    onClick={focusSetBlock(index)}
+                    onKeyDown={blockKeyPressHandler}
+                ></FactoryBlockComponent>
+            ))}
+        </div>
+    );
     const emptyPageComponent = (
         <EmptyPageComponent
             onClick={emptyPageClickHandler}
@@ -245,7 +228,7 @@ export function PageBlockComponent() {
                     onChange={pageInputChangeHandler}
                 ></input>
             </h1>
-            {isEmpty ? emptyPageComponent : blockComponents}
+            {isEmpty ? emptyPageComponent : blocksComponents}
         </div>
     );
 }
