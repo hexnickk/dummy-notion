@@ -6,7 +6,7 @@ import {
     resetFocus,
     setFocus,
 } from './focused.events';
-import { findBlockStore } from '~src/stores/blocks';
+import { Block, findBlockStore } from '~src/stores/blocks';
 
 const initialState: FocusedState = null;
 export const $focusedStore = focusedDomain.createStore<FocusedState>(
@@ -15,6 +15,9 @@ export const $focusedStore = focusedDomain.createStore<FocusedState>(
         name: 'Focused store',
     }
 );
+
+export const isFocused = (block: Block) =>
+    $focusedStore.map((state) => state?.id === block?.id);
 
 const min = (a, b) => (a < b ? a : b);
 const max = (a, b) => (a > b ? a : b);
