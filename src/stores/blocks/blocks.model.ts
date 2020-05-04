@@ -95,6 +95,7 @@ export type InputBasedBlock =
 export interface BlockComponentProps<T extends Block = Block> {
     block: T;
     focused?: boolean;
+    selected?: boolean;
     onClick?: () => void;
     onChange?: (block: T) => void;
 }

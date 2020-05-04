@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.0.6",
+    "@simonwep/selection-js": "^1.7.0",
     "antd": "^4.1.2",
     "effector": "^20.13.7",
     "effector-react": "^20.6.3",

@@ -892,6 +892,11 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@simonwep/selection-js@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@simonwep/selection-js/-/selection-js-1.7.0.tgz#1bede998e6f4e38b43d68dc740e5d3c6a0f10e1e"
+  integrity sha512-IJNYRwxp2Woc6HEr5V0aqiaPBZIRivx45KiiUZOrya0P++PdjdqPrHydRGRLn2jEDJ7bUBoxmYC2Ojfm+Hsjqw==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"

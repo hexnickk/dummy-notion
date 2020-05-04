@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
+import React, { KeyboardEvent, ChangeEvent, useEffect } from 'react';
 import './page-block.component.scss';
 
 import { useStore } from 'effector-react';
@@ -16,40 +16,22 @@ import {
     checkboxBlockFactory,
 } from '~src/stores/blocks';
 import { useParams } from 'react-router-dom';
-import { CheckboxBlockComponent } from '~src/components/checkbox-block';
 import { EmptyPageComponent } from '~src/components/empty-page';
-import { TextBlockComponent } from '~src/components/text-block/text-block.components';
-import { HeaderBlockComponent } from '~src/components/header-block';
-import { PageLinkBlockComponent } from '~src/components/page-link-block';
 import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
-
-const min = (a, b) => (a < b ? a : b);
-const max = (a, b) => (a > b ? a : b);
+import { FactoryBlockComponent } from '~src/components/factory-block';
+import { focusNext, focusPrevious, resetFocus } from '~src/stores/focused';
 
 export function PageBlockComponent() {
     const { blockPageId } = useParams();
-    const [focused, setFocused] = useState(0);
     const page = useStore(
         findBlockStore<PageBlock>((block) => block.id === blockPageId)
     );
     const children = page.children;
     const isEmpty = !children || children.length === 0;
 
-    const focusNextBlock = () => {
-        setFocused(min(focused + 1, children.length - 1));
-    };
-
-    const forceFocusNextBlock = () => {
-        setFocused(focused + 1);
-    };
-
-    const focusPreviousBlock = () => {
-        setFocused(max(focused - 1, 0));
-    };
-
-    const focusSetBlock = (index: number) => () => {
-        setFocused(index);
-    };
+    useEffect(() => {
+        resetFocus();
+    }, [blockPageId]);
 
     const pageInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const updatedBlock: Block = {
@@ -61,23 +43,23 @@ export function PageBlockComponent() {
         });
     };
 
-    const createChildBlockHandler = (initializer: Block, target: Block) => {
+    const createChildBlockHandler = (source: Block, target: Block) => {
         const position = page.children.findIndex(
-            (item) => item.id === initializer.id
+            (item) => item.id === source.id
         );
         insertChild({
             parent: page,
             target: target,
             position,
         });
-        forceFocusNextBlock();
+        focusNext({ source: source });
     };
 
     const deleteBlockHandler = (block: Block) => {
+        focusPrevious({ source: block });
         deleteBlock({
             target: block,
         });
-        focusPreviousBlock();
     };
 
     const blockKeyPressHandler = (
@@ -125,11 +107,11 @@ export function PageBlockComponent() {
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                focusPreviousBlock();
+                focusPrevious({ source: block });
                 break;
             case 'ArrowDown':
                 e.preventDefault();
-                focusNextBlock();
+                focusNext({ source: block });
                 break;
             case ']':
                 if (block.title === '[' && block.type !== 'checkbox') {
@@ -189,21 +171,6 @@ export function PageBlockComponent() {
         }
     };
 
-    const blockComponentFactory = (block: Block) => {
-        switch (block.type) {
-            case 'text':
-                return TextBlockComponent;
-            case 'checkbox':
-                return CheckboxBlockComponent;
-            case 'header':
-                return HeaderBlockComponent;
-            case 'page':
-                return PageLinkBlockComponent;
-            default:
-                return (_props: any) => <div>Unsupported block ☹️</div>;
-        }
-    };
-
     const emptyPageClickHandler = () => {
         pushChild({
             parent: page,
@@ -215,19 +182,18 @@ export function PageBlockComponent() {
         updateBlock({ target: block });
     };
 
-    const blockComponents = children.map((block, index) => {
-        const BlockComponent = blockComponentFactory(block);
-        return (
-            <BlockComponent
-                key={block.id}
-                block={block}
-                focused={index === focused}
-                onChange={blockOnChangeHandler}
-                onClick={focusSetBlock(index)}
-                onKeyDown={blockKeyPressHandler}
-            ></BlockComponent>
-        );
-    });
+    const blocksComponents = (
+        <div className="page__blocks">
+            {children.map((block) => (
+                <FactoryBlockComponent
+                    key={block.id}
+                    block={block}
+                    onChange={blockOnChangeHandler}
+                    onKeyDown={blockKeyPressHandler}
+                ></FactoryBlockComponent>
+            ))}
+        </div>
+    );
     const emptyPageComponent = (
         <EmptyPageComponent
             onClick={emptyPageClickHandler}
@@ -245,7 +211,7 @@ export function PageBlockComponent() {
                     onChange={pageInputChangeHandler}
                 ></input>
             </h1>
-            {isEmpty ? emptyPageComponent : blockComponents}
+            {isEmpty ? emptyPageComponent : blocksComponents}
         </div>
     );
 }
