@@ -22,6 +22,4 @@ export const focusPrevious = focusedDomain.createEvent<FocusPrevious>(
     'Focus previous block'
 );
 
-export const resetFocus = focusedDomain.createEvent(
-    'Reset focus'
-)
+export const resetFocus = focusedDomain.createEvent('Reset focus');

@@ -1,3 +1,3 @@
-import {Block} from "~src/stores/blocks";
+import { Block } from '~src/stores/blocks';
 
 export type FocusedState = Block | null;

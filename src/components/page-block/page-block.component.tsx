@@ -184,7 +184,7 @@ export function PageBlockComponent() {
 
     const blocksComponents = (
         <div className="page__blocks">
-            {children.map((block, index) => (
+            {children.map((block) => (
                 <FactoryBlockComponent
                     key={block.id}
                     block={block}

@@ -4,7 +4,7 @@ import ErrorBoundary from './components/error-boundaries';
 import { AppSider } from '~src/components/sider';
 import { Layout } from 'antd';
 import { useStore } from 'effector-react';
-import {$rootBlockStore, PageBlock} from '~src/stores/blocks';
+import { $rootBlockStore, PageBlock } from '~src/stores/blocks';
 import { PageBlockComponent } from './components/page-block';
 
 const { Content } = Layout;

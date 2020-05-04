@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 import './styles.scss';
 import { App } from './app.component';
 import { initBlocks } from '~src/stores/blocks';
-import { initSelected } from '~src/stores/selected';
+import { initSelection } from '~src/stores/selection/selection.init';
 
 initBlocks();
-initSelected();
+initSelection();
 ReactDOM.render(<App></App>, document.getElementById('root'));
