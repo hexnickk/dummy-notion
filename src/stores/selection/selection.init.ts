@@ -3,13 +3,9 @@ import { setSelection } from './selection.events';
 import { resetFocus } from '~src/stores/focused';
 import { $selectedStore, setSelected } from '~src/stores/selected';
 
-const isEqSelectedArrays = (array1: readonly any[], array2: readonly any[]) =>
-    array1.length !== array2.length
-        ? false
-        : array1.reduce(
-              (acc, _, index) => array1[index] === array2[index] && acc,
-              true
-          );
+const arraysEqual<T> = (arr1: readonly T[], arr2: readonly T[]) =>
+    arr1.length == arr2.length && 
+    arr1.every((v1, i) => v1 === arr2[i]);
 
 export const initSelection = () => {
     const selection = Selection.create({
