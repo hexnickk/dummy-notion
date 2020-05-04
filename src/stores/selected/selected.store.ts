@@ -11,6 +11,6 @@ export const $selectedStore = selectedDomain.createStore<SelectedState>(
 );
 
 export const isSelected = (node: Element) => (state: SelectedState) =>
-    state.indexOf(node) !== -1;
+    state.includes(node);
 
 $selectedStore.on(setSelected, (_state, { targets }) => targets);
