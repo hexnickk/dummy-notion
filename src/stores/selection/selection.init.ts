@@ -3,8 +3,8 @@ import { setSelection } from './selection.events';
 import { resetFocus } from '~src/stores/focused';
 import { $selectedStore, setSelected } from '~src/stores/selected';
 
-const arraysEqual<T> = (arr1: readonly T[], arr2: readonly T[]) =>
-    arr1.length == arr2.length && 
+const isFlatArraysEqual = <T>(arr1: readonly T[], arr2: readonly T[]) =>
+    arr1.length === arr2.length &&
     arr1.every((v1, i) => v1 === arr2[i]);
 
 export const initSelection = () => {
@@ -22,7 +22,7 @@ export const initSelection = () => {
         })
         .on('move', (event) => {
             const selected = $selectedStore.getState();
-            if (!isEqSelectedArrays(selected, event.selected)) {
+            if (!isFlatArraysEqual(selected, event.selected)) {
                 setSelected({ targets: event.selected });
             }
         });
