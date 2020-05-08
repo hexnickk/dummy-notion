@@ -4,8 +4,7 @@ import { resetFocus } from '~src/stores/focused';
 import { $selectedStore, setSelected } from '~src/stores/selected';
 
 const isFlatArraysEqual = <T>(arr1: readonly T[], arr2: readonly T[]) =>
-    arr1.length === arr2.length &&
-    arr1.every((v1, i) => v1 === arr2[i]);
+    arr1.length === arr2.length && arr1.every((v1, i) => v1 === arr2[i]);
 
 export const initSelection = () => {
     const selection = Selection.create({

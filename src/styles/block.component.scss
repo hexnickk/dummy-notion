@@ -12,4 +12,9 @@
             outline: none;
         }
     }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+    }
 }

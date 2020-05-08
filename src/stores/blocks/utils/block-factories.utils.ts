@@ -8,10 +8,10 @@ import {
 import { nanoid } from 'nanoid';
 
 export const textBlockFactory = (options: Partial<Block> = {}): TextBlock => ({
+    id: nanoid(),
     title: '',
     // We need to be able to only override ^
     ...options,
-    id: nanoid(),
     type: 'text',
     children: [],
     createdAt: new Date(),
@@ -21,11 +21,11 @@ export const textBlockFactory = (options: Partial<Block> = {}): TextBlock => ({
 export const checkboxBlockFactory = (
     options: Partial<Block> = {}
 ): CheckboxBlock => ({
-    checked: false,
+    id: nanoid(),
     title: '',
+    checked: false,
     // We need to be able to only override ^
     ...options,
-    id: nanoid(),
     type: 'checkbox',
     children: [],
     createdAt: new Date(),
@@ -35,11 +35,11 @@ export const checkboxBlockFactory = (
 export const headerBlockFactory = (
     options: Partial<Block> = {}
 ): HeaderBlock => ({
+    id: nanoid(),
     size: 'h1',
     title: '',
     // We need to be able to only override ^
     ...options,
-    id: nanoid(),
     type: 'header',
     children: [],
     createdAt: new Date(),
@@ -47,10 +47,10 @@ export const headerBlockFactory = (
 });
 
 export const pageBlockFactory = (options: Partial<Block> = {}): PageBlock => ({
+    id: nanoid(),
     title: 'Untitled',
     // We need to be able to only override ^
     ...options,
-    id: nanoid(),
     type: 'page',
     children: [],
     createdAt: new Date(),

@@ -98,6 +98,7 @@ export interface BlockComponentProps<T extends Block = Block> {
     selected?: boolean;
     onClick?: () => void;
     onChange?: (block: T) => void;
+    children?: any;
 }
 
 export interface InputBasedBlockComponentProps<T extends Block = Block>

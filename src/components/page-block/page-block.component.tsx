@@ -3,31 +3,33 @@ import './page-block.component.scss';
 
 import { useStore } from 'effector-react';
 import {
-    deleteBlock,
     updateBlock,
     findBlockStore,
     PageBlock,
     Block,
     pushChild,
-    insertChild,
     InputBasedBlock,
     textBlockFactory,
     convertBlock,
-    checkboxBlockFactory,
+    insertNextNeighbour,
 } from '~src/stores/blocks';
 import { useParams } from 'react-router-dom';
 import { EmptyPageComponent } from '~src/components/empty-page';
 import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
 import { FactoryBlockComponent } from '~src/components/factory-block';
-import { focusNext, focusPrevious, resetFocus } from '~src/stores/focused';
+import {
+    focusNext,
+    focusPrevious,
+    resetFocus,
+    setFocus,
+} from '~src/stores/focused';
 
 export function PageBlockComponent() {
     const { blockPageId } = useParams();
     const page = useStore(
         findBlockStore<PageBlock>((block) => block.id === blockPageId)
     );
-    const children = page.children;
-    const isEmpty = !children || children.length === 0;
+    const isEmpty = !page.children || page.children.length === 0;
 
     useEffect(() => {
         resetFocus();
@@ -43,44 +45,18 @@ export function PageBlockComponent() {
         });
     };
 
-    const createChildBlockHandler = (source: Block, target: Block) => {
-        const position = page.children.findIndex(
-            (item) => item.id === source.id
-        );
-        insertChild({
-            parent: page,
-            target: target,
-            position,
-        });
-        focusNext({ source: source });
-    };
-
-    const deleteBlockHandler = (block: Block) => {
-        focusPrevious({ source: block });
-        deleteBlock({
-            target: block,
-        });
-    };
-
     const blockKeyPressHandler = (
         block: InputBasedBlock,
         e: KeyboardEvent<HTMLInputElement>
     ) => {
         const isEmptyTitle = block.title === '';
 
-        const isTextBlock = block.type === 'text';
-        const isCheckBoxBlock = block.type === 'checkbox';
         const isHeaderBlock = block.type === 'header';
         const isPageBlock = block.type === 'page';
 
         switch (e.key) {
             case 'Backspace':
             case 'Delete':
-                if (isEmptyTitle && isTextBlock) {
-                    e.preventDefault();
-                    deleteBlockHandler(block);
-                    break;
-                }
                 if (isEmptyTitle) {
                     e.preventDefault();
                     convertBlock({
@@ -92,18 +68,16 @@ export function PageBlockComponent() {
                 break;
             case 'Enter':
                 e.preventDefault();
-                if (isEmptyTitle && !isTextBlock) {
+                if (isEmptyTitle) {
                     convertBlock({
                         target: block,
                         type: 'text',
                     });
                     break;
                 }
-                if (isCheckBoxBlock) {
-                    createChildBlockHandler(block, checkboxBlockFactory());
-                    break;
-                }
-                createChildBlockHandler(block, textBlockFactory());
+                const target = textBlockFactory();
+                insertNextNeighbour({ source: block, target });
+                setFocus({ target });
                 break;
             case 'ArrowUp':
                 e.preventDefault();
@@ -119,6 +93,7 @@ export function PageBlockComponent() {
                     convertBlock({
                         target: block,
                         type: 'checkbox',
+                        options: { title: '' },
                     });
                 }
                 break;
@@ -129,7 +104,7 @@ export function PageBlockComponent() {
                     convertBlock({
                         target: block,
                         type: 'header',
-                        options: { size: 'h1' },
+                        options: { title: '', size: 'h1' },
                     });
                     break;
                 }
@@ -138,7 +113,7 @@ export function PageBlockComponent() {
                     convertBlock({
                         target: block,
                         type: 'header',
-                        options: { size: 'h2' },
+                        options: { title: '', size: 'h2' },
                     });
                     break;
                 }
@@ -147,7 +122,7 @@ export function PageBlockComponent() {
                     convertBlock({
                         target: block,
                         type: 'header',
-                        options: { size: 'h3' },
+                        options: { title: '', size: 'h3' },
                     });
                     break;
                 }
@@ -156,7 +131,7 @@ export function PageBlockComponent() {
                     convertBlock({
                         target: block,
                         type: 'header',
-                        options: { size: 'h4' },
+                        options: { title: '', size: 'h4' },
                     });
                     break;
                 }
@@ -182,17 +157,23 @@ export function PageBlockComponent() {
         updateBlock({ target: block });
     };
 
-    const blocksComponents = (
-        <div className="page__blocks">
-            {children.map((block) => (
+    const mapChildren = (children: Block[]) => {
+        return children.map((block) => {
+            return (
                 <FactoryBlockComponent
                     key={block.id}
                     block={block}
                     onChange={blockOnChangeHandler}
                     onKeyDown={blockKeyPressHandler}
-                ></FactoryBlockComponent>
-            ))}
-        </div>
+                >
+                    {mapChildren(block.children)}
+                </FactoryBlockComponent>
+            );
+        });
+    };
+
+    const blocksComponents = (
+        <div className="page__blocks">{mapChildren(page.children)}</div>
     );
     const emptyPageComponent = (
         <EmptyPageComponent

@@ -20,7 +20,6 @@ export const isFocused = (block: Block) =>
     $focusedStore.map((state) => state?.id === block?.id);
 
 const min = (a, b) => (a < b ? a : b);
-const max = (a, b) => (a > b ? a : b);
 
 $focusedStore
     .on(setFocus, (_state, { target }) => target)
@@ -44,7 +43,8 @@ $focusedStore
         const sourceIndex = parent.children.findIndex(
             (child) => child.id === source.id
         );
-        return parent.children[max(sourceIndex - 1, 0)];
+        const targetIndex = sourceIndex - 1;
+        return targetIndex < 0 ? parent : parent.children[targetIndex];
     })
     .on(resetFocus, () => {
         $focusedStore.reset();

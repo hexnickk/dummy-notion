@@ -40,3 +40,18 @@ export interface ConvertBlock {
 export const convertBlock = blocksDomain.createEvent<ConvertBlock>(
     'Convert block'
 );
+
+export interface AttachToNeighbour {
+    target: Block;
+}
+export const attachToNeighbour = blocksDomain.createEvent<AttachToNeighbour>(
+    'Attach to neighbour'
+);
+
+export interface InsertNextNeighbour {
+    source: Block;
+    target: Block;
+}
+export const insertNextNeighbour = blocksDomain.createEvent<
+    InsertNextNeighbour
+>('Insert neighbour');

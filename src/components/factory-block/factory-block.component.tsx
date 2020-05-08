@@ -82,6 +82,7 @@ export const FactoryBlockComponent = React.memo(
         block,
         onChange,
         onKeyDown,
+        children,
     }: Omit<
         InputBasedBlockComponentProps,
         'focused' | 'selected' | 'onClick'
@@ -138,7 +139,9 @@ export const FactoryBlockComponent = React.memo(
                     onChange={onChange}
                     onClick={onClick}
                     onKeyDown={onKeyDown}
-                ></BlockComponent>
+                >
+                    {children}
+                </BlockComponent>
             </div>
         );
     }

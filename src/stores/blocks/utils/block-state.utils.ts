@@ -22,6 +22,14 @@ export const _findBlock = (
     return _iter(state);
 };
 
+export const _findParent = (state: BlocksState, target: Block) => {
+    return _findBlock(
+        state,
+        (block) =>
+            block.children.find((child) => child.id === target.id) !== undefined
+    );
+};
+
 export const _updateBlock = (state: BlocksState, target: Block) => {
     const _iter = (current: Block) => {
         if (current.id === target.id) {
@@ -74,7 +82,7 @@ export const _insertBlock = (
                 children: node.children.reduce(
                     (acc, curr, index) =>
                         index === position
-                            ? [...acc, curr, target]
+                            ? [...acc, target, curr]
                             : [...acc, curr],
                     []
                 ),
@@ -114,7 +122,10 @@ export const _convertBlockTo = (
     const _iter = (node: Block) => {
         if (node.id === target.id) {
             const blockFactory = blockFactoryStrategy(type);
-            return blockFactory(options);
+            return blockFactory({
+                ...target,
+                ...options,
+            });
         }
         if (node.children.length === 0) {
             return node;
@@ -140,4 +151,34 @@ export const _pathToPage = (state: BlocksState, target: PageBlock) => {
             .find((item) => !!item);
     };
     return _iter(state, []);
+};
+
+export const _attachToNeighbour = (state: BlocksState, target: Block) => {
+    const parent = _findParent(state, target);
+    const targetIndex = parent.children.findIndex(
+        (child) => child.id === target.id
+    );
+    const neighbourIndex = targetIndex - 1;
+    if (neighbourIndex < 0) {
+        return state;
+    }
+    const neighbour = parent.children[neighbourIndex];
+    const stateWithoutTarget = _deleteBlock(state, target);
+    return _pushChild(stateWithoutTarget, neighbour, target);
+};
+
+export const _insertNextNeighbour = (
+    state: BlocksState,
+    source: Block,
+    target: Block
+) => {
+    const parent = _findParent(state, source);
+    const sourceIndex = parent.children.findIndex(
+        (child) => child.id === source.id
+    );
+    const targetIndex = sourceIndex + 1;
+    if (targetIndex === parent.children.length) {
+        return _pushChild(state, parent, target);
+    }
+    return _insertBlock(state, parent, target, targetIndex);
 };

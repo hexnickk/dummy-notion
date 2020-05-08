@@ -6,6 +6,8 @@ import {
     convertBlock,
     deleteBlock,
     updateBlock,
+    attachToNeighbour,
+    insertNextNeighbour,
 } from './blocks.events';
 import { blocksDomain } from './blocks.domain';
 import { nanoid } from 'nanoid';
@@ -17,6 +19,8 @@ import {
     _pathToPage,
     _findBlock,
     _updateBlock,
+    _attachToNeighbour,
+    _insertNextNeighbour,
 } from './utils';
 
 const firstPage: PageBlock = {
@@ -79,4 +83,10 @@ $blocksStore
         return target.type === type
             ? state
             : _convertBlockTo(state, target, type, options);
+    })
+    .on(attachToNeighbour, (state, { target }) => {
+        return _attachToNeighbour(state, target);
+    })
+    .on(insertNextNeighbour, (state, { source, target }) => {
+        return _insertNextNeighbour(state, source, target);
     });
