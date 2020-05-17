@@ -18,7 +18,7 @@ export function AppSider({ className, pages }: AppSiderProps) {
     const menuItems = pages?.map((page) => {
         const route = `/${page.id}`;
         return (
-            <Menu.Item key={route}>
+            <Menu.Item key={route} data-cy="sider-menu-item">
                 <Link to={route}>
                     <span>{page.title}</span>
                 </Link>
@@ -28,7 +28,7 @@ export function AppSider({ className, pages }: AppSiderProps) {
     // const addListHandler = () => addPage();
     return (
         <Sider className={`${className}`} width="20%">
-            <div className="sider">
+            <div className="sider" data-cy="sider">
                 <div className="sider__title">Private</div>
                 <Menu
                     className="sider__menu"

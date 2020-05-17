@@ -4,9 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel index.html",
+    "start": "parcel index.html",
     "build": "parcel build index.html",
-    "lint": "eslint -c eslint.config.js 'src/**/*.{tsx,ts}'"
+    "lint": "eslint -c eslint.config.js 'src/**/*.{tsx,ts}'",
+    "e2e": "cypress run",
+    "e2e:dev": "cypress open"
   },
   "devDependencies": {
     "@types/react": "^16.9.34",
@@ -14,6 +16,7 @@
     "@types/react-router-dom": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
+    "cypress": "^4.5.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",

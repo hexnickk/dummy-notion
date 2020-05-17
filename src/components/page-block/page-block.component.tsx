@@ -181,7 +181,7 @@ export function PageBlockComponent() {
         ></EmptyPageComponent>
     );
     return (
-        <div className="page-page">
+        <div className="page-page" data-cy="page">
             <PageBlockBreadCrumbComponent
                 page={page}
             ></PageBlockBreadCrumbComponent>
