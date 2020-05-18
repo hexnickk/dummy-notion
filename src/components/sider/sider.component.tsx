@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button, Layout, Menu } from 'antd';
 import { PlusOutlined } from '@ant-design/icons/lib';
+import { useStore } from 'effector-react';
 import { Link, useLocation } from 'react-router-dom';
+
 import './sider.component.scss';
-import { PageBlock } from '~src/stores/blocks';
+import {
+    $rootBlockStore,
+    PageBlock,
+    pageBlockFactory,
+    pushChild,
+} from '~src/stores/blocks';
 
 const { Sider } = Layout;
 
@@ -14,6 +21,15 @@ interface AppSiderProps {
 
 export function AppSider({ className, pages }: AppSiderProps) {
     const location = useLocation();
+    const rootBlock = useStore($rootBlockStore);
+    const addHandler = useCallback(
+        () =>
+            pushChild({
+                parent: rootBlock,
+                child: pageBlockFactory({ title: 'New page' }),
+            }),
+        [rootBlock]
+    );
 
     const menuItems = pages?.map((page) => {
         const route = `/${page.id}`;
@@ -25,7 +41,6 @@ export function AppSider({ className, pages }: AppSiderProps) {
             </Menu.Item>
         );
     });
-    // const addListHandler = () => addPage();
     return (
         <Sider className={`${className}`} width="20%">
             <div className="sider" data-cy="sider">
@@ -41,7 +56,8 @@ export function AppSider({ className, pages }: AppSiderProps) {
                 <Button
                     className="sider__add-button"
                     block
-                    // onClick={addListHandler}
+                    data-cy="sider-new-page-button"
+                    onClick={addHandler}
                 >
                     <PlusOutlined></PlusOutlined>&nbsp;Add page
                 </Button>
