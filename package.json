@@ -25,7 +25,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.0.6",
+    "@ant-design/icons": "^4.1.0",
     "@simonwep/selection-js": "^1.7.0",
     "antd": "^4.1.2",
     "effector": "^20.13.7",

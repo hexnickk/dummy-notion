@@ -2,12 +2,9 @@ import React, { Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import ErrorBoundary from './components/error-boundaries';
 import { AppSider } from '~src/components/sider';
-import { Layout } from 'antd';
 import { useStore } from 'effector-react';
 import { $rootBlockStore, PageBlock } from '~src/stores/blocks';
 import { PageBlockComponent } from './components/page-block';
-
-const { Content } = Layout;
 
 const ErrorPage = React.lazy(() => import('./pages/error-page'));
 const NotFoundPage = React.lazy(() => import('./pages/not-found-page'));
@@ -33,12 +30,12 @@ export default function AppRouter() {
             <Redirect from="/" exact={true} to={rootPages[0]?.id}></Redirect>
             <Route>
                 {/*TODO: move to lazy loaded Home component*/}
-                <Layout className="app">
+                <div className="app">
                     <AppSider
                         className="app__sider"
                         pages={rootPages}
                     ></AppSider>
-                    <Content className="app__content">
+                    <div className="app__content">
                         <ErrorBoundary>
                             <Switch>
                                 <Route exact path="/:blockPageId">
@@ -46,8 +43,8 @@ export default function AppRouter() {
                                 </Route>
                             </Switch>
                         </ErrorBoundary>
-                    </Content>
-                </Layout>
+                    </div>
+                </div>
             </Route>
         </Switch>
     );

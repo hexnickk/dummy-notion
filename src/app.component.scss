@@ -1,5 +1,14 @@
 .app {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+
+    &__sider {
+        width: 240px;
+    }
+
     &__content {
-        min-height: 100vh;
+        flex: 1;
     }
 }
+

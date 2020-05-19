@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
-import { Button, Layout, Menu } from 'antd';
-import { PlusOutlined } from '@ant-design/icons/lib';
+import { PlusOutlined, MoreOutlined } from '@ant-design/icons/lib';
 import { useStore } from 'effector-react';
-import { Link, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import './sider.component.scss';
 import {
@@ -12,17 +11,48 @@ import {
     pushChild,
 } from '~src/stores/blocks';
 
-const { Sider } = Layout;
+const AppSiderSectionItem = React.memo(({ page }: { page: PageBlock }) => {
+    const route = `/${page.id}`;
 
-interface AppSiderProps {
-    className?: string;
+    return (
+        <NavLink
+            className="sider__menu-item"
+            activeClassName="sider__menu-item_selected"
+            to={route}
+        >
+            <span>{page.title}</span>
+            <MoreOutlined></MoreOutlined>
+        </NavLink>
+    );
+});
+
+const AppSiderSection = React.memo(
+    ({ pages, onAdd }: { pages: PageBlock[]; onAdd: () => void }) => {
+        return (
+            <>
+                <div className="sider__section-title">
+                    <span>Private</span>{' '}
+                    <PlusOutlined onClick={onAdd}></PlusOutlined>
+                </div>
+                <div className="sider__section">
+                    {pages.map((page) => (
+                        <AppSiderSectionItem page={page} key={page.id}></AppSiderSectionItem>
+                    ))}
+                </div>
+            </>
+        );
+    }
+);
+
+export function AppSider({
+    pages,
+    className,
+}: {
     pages?: PageBlock[];
-}
-
-export function AppSider({ className, pages }: AppSiderProps) {
-    const location = useLocation();
+    className?: string;
+}) {
     const rootBlock = useStore($rootBlockStore);
-    const addHandler = useCallback(
+    const onAdd = useCallback(
         () =>
             pushChild({
                 parent: rootBlock,
@@ -31,37 +61,11 @@ export function AppSider({ className, pages }: AppSiderProps) {
         [rootBlock]
     );
 
-    const menuItems = pages?.map((page) => {
-        const route = `/${page.id}`;
-        return (
-            <Menu.Item key={route} data-cy="sider-menu-item">
-                <Link to={route}>
-                    <span>{page.title}</span>
-                </Link>
-            </Menu.Item>
-        );
-    });
     return (
-        <Sider className={`${className}`} width="20%">
-            <div className="sider" data-cy="sider">
-                <div className="sider__title">Private</div>
-                <Menu
-                    className="sider__menu"
-                    theme="dark"
-                    mode="inline"
-                    selectedKeys={[location.pathname]}
-                >
-                    {menuItems}
-                </Menu>
-                <Button
-                    className="sider__add-button"
-                    block
-                    data-cy="sider-new-page-button"
-                    onClick={addHandler}
-                >
-                    <PlusOutlined></PlusOutlined>&nbsp;Add page
-                </Button>
-            </div>
-        </Sider>
+        <div className={`${className} sider`} data-cy="sider">
+            <div className="sider__workspace">Workspace</div>
+            <div className="sider__search">🔎 Quick find</div>
+            <AppSiderSection pages={pages} onAdd={onAdd}></AppSiderSection>
+        </div>
     );
 }

@@ -1,15 +1,30 @@
+$text-color: rgba(25, 23, 17, 0.6);
+$header-color: rgba(55, 53, 47, 0.4);
+$box-background: rgba(55, 53, 47, 0.08) none repeat scroll 0% 0%;
+
 .sider {
-    height: 100%;
     padding: 16px;
     display: flex;
     flex-direction: column;
+    color: $text-color;
+    background-color: rgb(247, 246, 243);
 
-    &__search {
-        margin-bottom: 8px;
+    &__workspace {
+        padding: 4px 0;
+        font-weight: bold;
     }
 
-    &__title {
-        color: white;
+    &__search {
+        padding: 4px 0;
+    }
+
+    &__section {
+    }
+
+    &__section-title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         margin-bottom: 8px;
     }
 
@@ -17,6 +32,18 @@
         flex: 1;
     }
 
-    &__add-button {
+    &__menu-item {
+        display: block;
+        color: $text-color;
+        padding: 4px;
+
+        &:hover {
+            color: $text-color;
+            background: $box-background;
+        }
+
+        &_selected {
+            background: $box-background;
+        }
     }
 }
