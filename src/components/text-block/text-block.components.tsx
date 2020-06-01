@@ -58,6 +58,7 @@ export const TextBlockComponent = React.memo(
         return (
             <div
                 className="block-component"
+                data-cy="text-block"
                 ref={containerNode}
                 onClick={onClick}
             >

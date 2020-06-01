@@ -16,7 +16,7 @@ import {
     insertNextNeighbour,
 } from '~src/stores/blocks';
 import { EmptyPageComponent } from '~src/components/empty-page';
-import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
+import { PageBlockBreadCrumbComponent } from './page-block-breadcrumb.component';
 import { FactoryBlockComponent } from '~src/components/factory-block';
 import {
     focusNext,

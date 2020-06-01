@@ -6,7 +6,7 @@ interface EmptyPageComponentProps {
 }
 export function EmptyPageComponent({ onClick }: EmptyPageComponentProps) {
     return (
-        <div className="empty-page" onClick={onClick}>
+        <div className="empty-page" data-cy="empty-page" onClick={onClick}>
             Nothing is here, just click me
         </div>
     );

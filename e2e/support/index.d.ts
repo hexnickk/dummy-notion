@@ -7,7 +7,13 @@ declare namespace Cypress {
         /**
          * Custom command to select DOM element by data-cy attribute.
          * @example cy.dataCy('greeting')
+         * @example cy.dataCy('greeting', ':first-child')
+         * @example cy.dataCy('greeting', '', 'input')
          */
-        dataCy(value: string): Chainable<Element>
+        dataCy(
+            value: string,
+            modifier?: string,
+            subselector?: string
+        ): Chainable<Element>;
     }
 }
