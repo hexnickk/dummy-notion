@@ -1,7 +1,9 @@
 import React, { KeyboardEvent, ChangeEvent, useEffect } from 'react';
 import './page-block.component.scss';
 
+import { useParams, Redirect } from 'react-router-dom';
 import { useStore } from 'effector-react';
+
 import {
     updateBlock,
     findBlockStore,
@@ -13,7 +15,6 @@ import {
     convertBlock,
     insertNextNeighbour,
 } from '~src/stores/blocks';
-import { useParams } from 'react-router-dom';
 import { EmptyPageComponent } from '~src/components/empty-page';
 import { PageBlockBreadCrumbComponent } from '~src/components/page-block-breadcrumb';
 import { FactoryBlockComponent } from '~src/components/factory-block';
@@ -29,11 +30,14 @@ export function PageBlockComponent() {
     const page = useStore(
         findBlockStore<PageBlock>((block) => block.id === blockPageId)
     );
-    const isEmpty = !page.children || page.children.length === 0;
-
     useEffect(() => {
         resetFocus();
     }, [blockPageId]);
+
+    if (!page) {
+        return <Redirect to="/"></Redirect>;
+    }
+    const isEmpty = !page.children || page.children.length === 0;
 
     const pageInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const updatedBlock: Block = {

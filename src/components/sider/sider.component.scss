@@ -9,16 +9,24 @@ $box-background: rgba(55, 53, 47, 0.08) none repeat scroll 0% 0%;
     color: $text-color;
     background-color: rgb(247, 246, 243);
 
+    &__block {
+        margin-bottom: 20px;
+    }
+
     &__workspace {
         padding: 4px 0;
         font-weight: bold;
     }
 
-    &__search {
+    &__search,
+    &__updates,
+    &__settings {
+        cursor: not-allowed;
         padding: 4px 0;
     }
 
-    &__section {
+    &__updates {
+        font-weight: bold;
     }
 
     &__section-title {
@@ -26,6 +34,7 @@ $box-background: rgba(55, 53, 47, 0.08) none repeat scroll 0% 0%;
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 8px;
+        text-transform: uppercase;
     }
 
     &__menu {
@@ -33,7 +42,9 @@ $box-background: rgba(55, 53, 47, 0.08) none repeat scroll 0% 0%;
     }
 
     &__menu-item {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: $text-color;
         padding: 4px;
 
