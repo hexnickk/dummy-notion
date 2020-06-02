@@ -15,5 +15,7 @@ declare namespace Cypress {
             modifier?: string,
             subselector?: string
         ): Chainable<Element>;
+
+        typeTab(shiftKey?: boolean, ctrlKey?: boolean): Chainable<Element>;
     }
 }

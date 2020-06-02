@@ -27,3 +27,12 @@
 Cypress.Commands.add('dataCy', (selector, modifier = '', subselector = '') =>
     cy.get(`[data-cy=${selector}]${modifier} ${subselector}`)
 );
+
+Cypress.Commands.add('typeTab', (shiftKey, ctrlKey) => {
+    cy.focused().trigger('keydown', {
+        keyCode: 9,
+        which: 9,
+        shiftKey: shiftKey,
+        ctrlKey: ctrlKey
+    });
+});

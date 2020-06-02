@@ -43,6 +43,7 @@ export const CheckboxBlockComponent = React.memo(
         };
 
         const keyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+            console.log(e);
             switch (e.key) {
                 case 'Tab':
                     e.preventDefault();
@@ -70,6 +71,7 @@ export const CheckboxBlockComponent = React.memo(
         return (
             <div
                 className="block-component block-component_checkbox"
+                data-cy="checkbox-block"
                 ref={containerNode}
                 onClick={onClickHandler}
             >
